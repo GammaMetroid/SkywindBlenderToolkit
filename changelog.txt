@@ -1,0 +1,14 @@
+Skywind Toolkit for Blender
+by Gamma_Metroid
+CHANGELOG
+
+1.2
+-adjusted default settings for collision creation
+-fix crash when mesh has no vertex colors
+-added support for creating multiple collision objects in a scene
+
+1.1
+-corrected readme instructions for ck-cmd collision material assignment
+
+1.0
+-initial release
