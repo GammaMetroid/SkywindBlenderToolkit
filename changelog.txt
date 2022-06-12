@@ -2,6 +2,10 @@ Skywind Toolkit for Blender
 by Gamma_Metroid
 CHANGELOG
 
+1.3
+-fixed collision bugs when the active object was in the scene collection, or the active collection
+-fixed collision mesh retaining some sharp edges
+
 1.2
 -adjusted default settings for collision creation
 -fix crash when mesh has no vertex colors
