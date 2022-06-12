@@ -3,7 +3,7 @@ bl_info= {
     "description": "Scripts to assist with creating collision and LOD meshes for Skywind",
     "author": "Gamma_Metroid",
     "blender": (3,1,0),
-    "version": (1, 2),
+    "version": (1,2,1),
     "support": "COMMUNITY",
     "category": "Object",
 }
@@ -25,7 +25,7 @@ class CreateCollision(bpy.types.Operator):
     coll_weld: bpy.props.BoolProperty(name="Weld Vertices", default=True)
     coll_weld_distance: bpy.props.FloatProperty(name="Weld Distance", default=1.00, min=1e-06, max=50)
     coll_expand_distance: bpy.props.FloatProperty(name="Expand Distance", default=3, min=-1000, max=1000)
-
+        
     def execute(self, context):
         # start timer
         time_start = time.time()
@@ -40,8 +40,22 @@ class CreateCollision(bpy.types.Operator):
         # get active object name
         base_name = bpy.context.active_object.name
         
+        # recursively transverse layer_collection for a particular name
+        def recurLayerCollection(layerColl, collName):
+            found = None
+            if (layerColl.name == collName):
+                return layerColl
+            for layer in layerColl.children:
+                found = recurLayerCollection(layer, collName)
+                if found:
+                    return found
+        
         # get active object collection
         collection = bpy.context.active_object.users_collection[0].name
+        # set this as the active collection
+        layer_collection = bpy.context.view_layer.layer_collection
+        layerColl = recurLayerCollection(layer_collection, collection)
+        bpy.context.view_layer.active_layer_collection = layerColl
         
         # duplicate objects
         bpy.ops.object.duplicate()
@@ -55,11 +69,9 @@ class CreateCollision(bpy.types.Operator):
         # remove materials and UV maps
         for uv_layers in bpy.context.active_object.data.uv_layers:
             bpy.ops.mesh.uv_texture_remove()
-
         # remove vertex colors
         for vertex_colors in bpy.context.active_object.data.vertex_colors:
             bpy.ops.mesh.vertex_color_remove()
-
         # remove custom split normals
         bpy.ops.mesh.customdata_custom_splitnormals_clear()
 
@@ -73,6 +85,8 @@ class CreateCollision(bpy.types.Operator):
 
         # turn off auto smooth
         bpy.context.active_object.data.use_auto_smooth = False
+        # mark all edges as not sharp
+        bpy.ops.mesh.mark_sharp(clear=True)
 
         # switch back to object mode
         bpy.ops.object.mode_set(mode='OBJECT')
@@ -104,13 +118,15 @@ class CreateCollision(bpy.types.Operator):
         if need_mopp == True:
             bpy.ops.object.add(type='EMPTY')
             bpy.context.active_object.name = base_name + "_rb_mopp"
-            bpy.data.collections[collection].objects.link(bpy.context.active_object) # add to our original object's collection
-            bpy.ops.collection.objects_remove_active() # remove from active collection
+            if collection != bpy.context.active_object.users_collection[0].name: # is the original object not in the active collection?
+                bpy.data.collections[collection].objects.link(bpy.context.active_object) # add to our original object's collection
+                bpy.ops.collection.objects_remove_active() # remove from active collection
         if need_rb == True:
             bpy.ops.object.add(type='EMPTY')
             bpy.context.active_object.name = base_name + "_rb"
-            bpy.data.collections[collection].objects.link(bpy.context.active_object) # add to our original object's collection
-            bpy.ops.collection.objects_remove_active() # remove from active collection
+            if collection != bpy.context.active_object.users_collection[0].name:
+                bpy.data.collections[collection].objects.link(bpy.context.active_object) # add to our original object's collection
+                bpy.ops.collection.objects_remove_active() # remove from active collection
         
         # parent mopp node to rigid body
         bpy.ops.object.select_pattern(pattern=base_name + "_rb_mopp")
@@ -227,16 +243,16 @@ def register():
     if kc:
         km = wm.keyconfigs.addon.keymaps.new(name='Object Mode', space_type='EMPTY')
         kmi = km.keymap_items.new(CreateLOD.bl_idname, 'L', 'PRESS', ctrl=True, alt=True)
-        kmi.properties.ratio0 = 0.2
-        kmi.properties.ratio1 = 0.1
+#        kmi.properties.ratio0 = 0.2
+#        kmi.properties.ratio1 = 0.1
         addon_keymaps.append((km, kmi))
 
         km = wm.keyconfigs.addon.keymaps.new(name='Object Mode', space_type='EMPTY')
         kmi = km.keymap_items.new(CreateCollision.bl_idname, 'C', 'PRESS', ctrl=True, alt=True)
-        kmi.properties.coll_ratio = 0.1
-        kmi.properties.coll_weld = True
-        kmi.properties.coll_weld_distance = 1.00
-        kmi.properties.coll_expand_distance = 3
+#        kmi.properties.coll_ratio = 0.1
+#        kmi.properties.coll_weld = True
+#        kmi.properties.coll_weld_distance = 1.00
+#        kmi.properties.coll_expand_distance = 3
         addon_keymaps.append((km, kmi))
 
 def unregister():
