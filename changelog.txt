@@ -5,6 +5,7 @@ CHANGELOG
 1.3
 -fixed collision bugs when the active object was in the scene collection, or the active collection
 -fixed collision mesh retaining some sharp edges
+-fixed settings not being retained
 
 1.2
 -adjusted default settings for collision creation
