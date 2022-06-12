@@ -3,7 +3,7 @@ bl_info= {
     "description": "Scripts to assist with creating collision and LOD meshes for Skywind",
     "author": "Gamma_Metroid",
     "blender": (3,1,0),
-    "version": (1, 2),
+    "version": (1,2,1),
     "support": "COMMUNITY",
     "category": "Object",
 }
