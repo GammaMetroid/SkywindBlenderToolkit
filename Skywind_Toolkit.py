@@ -1,9 +1,9 @@
 bl_info= {
     "name": "Skywind Toolkit",
-    "description": "Scripts to assist with creating collision and LOD meshes for Skywind",
+    "description": "Scripts to assist with Skywind 3D and Implementation",
     "author": "Gamma_Metroid",
-    "blender": (3,1,0),
-    "version": (1,2,1),
+    "blender": (3,3,0),
+    "version": (1,3,0),
     "support": "COMMUNITY",
     "category": "Object",
 }
@@ -40,7 +40,7 @@ class CreateCollision(bpy.types.Operator):
         # get active object name
         base_name = bpy.context.active_object.name
         
-        # recursively transverse layer_collection for a particular name
+        # recursively traverse layer_collection for a particular name
         def recurLayerCollection(layerColl, collName):
             found = None
             if (layerColl.name == collName):
@@ -204,30 +204,39 @@ class CreateLOD(bpy.types.Operator):
         print("LOD script finished in %.4f sec" % (time.time() - time_start))
         return {'FINISHED'}
 
-class AutoShrink(bpy.types.Operator):
-    """Import FBX, Shrink and Re-Export"""
+class SyncNames(bpy.types.Operator):
+    """Sync Object/Mesh Names"""
     
-    # made this to shrink LOD meshes to prevent z fighting when they're loading in
-    # (not done)
+    # rename meshes to match their parent objects
     
-    bl_idname = "object.auto_shrink"
-    bl_label = "AutoShrink"
+    bl_idname = "object.syncnames"
+    bl_label = "Sync Object/Mesh Names"
     bl_options = {'REGISTER', 'UNDO'}
-    
-    shrink_value: bpy.props.FloatProperty()
-    working_dir: bpy.props.StringProperty()
     
     def execute(self, context):
         time_start = time.time()
         
-        # foo
+        objArray = bpy.context.scene.objects
+
+        # first rename them to unique values to prevent any conflicts
+        n = 0
+        for i in objArray:
+            if hasattr(i.data,"name"): # only if the data has a name (empties don't)
+                i.data.name = "STK{:>03}".format(str(n))
+                n += 1
+
+        # rename all data blocks to match their parent objects
+        for i in objArray:
+            if hasattr(i.data,"name"): # only if the data has a name (empties don't)
+                i.data.name = i.name
         
-        print("AutoShrink script finished in %.4f sec" % (time.time() - time_start))
+        print("SyncNames script finished in %.4f sec" % (time.time() - time_start))
         return {'FINISHED'}
 
 def menu_func(self, context):
     self.layout.operator(CreateLOD.bl_idname)
     self.layout.operator(CreateCollision.bl_idname)
+    self.layout.operator(SyncNames.bl_idname)
 
 # store keymaps here to access after registration
 addon_keymaps = []
@@ -235,6 +244,7 @@ addon_keymaps = []
 def register():
     bpy.utils.register_class(CreateLOD)
     bpy.utils.register_class(CreateCollision)
+    bpy.utils.register_class(SyncNames)
     bpy.types.VIEW3D_MT_object.append(menu_func)
 
     # handle the keymap
@@ -243,16 +253,14 @@ def register():
     if kc:
         km = wm.keyconfigs.addon.keymaps.new(name='Object Mode', space_type='EMPTY')
         kmi = km.keymap_items.new(CreateLOD.bl_idname, 'L', 'PRESS', ctrl=True, alt=True)
-#        kmi.properties.ratio0 = 0.2
-#        kmi.properties.ratio1 = 0.1
         addon_keymaps.append((km, kmi))
 
         km = wm.keyconfigs.addon.keymaps.new(name='Object Mode', space_type='EMPTY')
         kmi = km.keymap_items.new(CreateCollision.bl_idname, 'C', 'PRESS', ctrl=True, alt=True)
-#        kmi.properties.coll_ratio = 0.1
-#        kmi.properties.coll_weld = True
-#        kmi.properties.coll_weld_distance = 1.00
-#        kmi.properties.coll_expand_distance = 3
+        addon_keymaps.append((km, kmi))
+        
+        km = wm.keyconfigs.addon.keymaps.new(name='Object Mode', space_type='EMPTY')
+        kmi = km.keymap_items.new(SyncNames.bl_idname, 'N', 'PRESS', ctrl=True, alt=True)
         addon_keymaps.append((km, kmi))
 
 def unregister():
@@ -263,6 +271,7 @@ def unregister():
 
     bpy.utils.unregister_class(CreateLOD)
     bpy.utils.unregister_class(CreateCollision)
+    bpy.utils.unregister_class(SyncNames)
     bpy.types.VIEW3D_MT_object.remove(menu_func)
 
 if __name__ == "__main__":
