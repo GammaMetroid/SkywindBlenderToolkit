@@ -35,4 +35,4 @@ Select all the objects you want to be part of your LOD model, then press `ctrl+a
 Hotkey: `Ctrl+Alt+N`
 
 Usage Instructions:
-Simply use the hotkey, and all data blocks will be renamed to match their parent objects. Operates on the entire scene, not sensitive to whether objects are active or selected.
+Select all the objects you want to have sync names for, then press the hotkey, and all data blocks will be renamed to match their parent objects.
