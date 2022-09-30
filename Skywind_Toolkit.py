@@ -3,13 +3,14 @@ bl_info= {
     "description": "Scripts to assist with Skywind 3D and Implementation",
     "author": "Gamma_Metroid",
     "blender": (3,3,0),
-    "version": (1,3,0),
+    "version": (1,3,1),
     "support": "COMMUNITY",
     "category": "Object",
 }
 
 import bpy
 import time
+import re # regex
 
 class CreateCollision(bpy.types.Operator):
     """Create Collision Mesh"""
@@ -215,20 +216,38 @@ class SyncNames(bpy.types.Operator):
     
     def execute(self, context):
         time_start = time.time()
+        print("Beginning name sync...")
         
-        objArray = bpy.context.scene.objects
+        objArray = bpy.context.selected_objects
+        
+        skipArray = list()
 
         # first rename them to unique values to prevent any conflicts
         n = 0
         for i in objArray:
             if hasattr(i.data,"name"): # only if the data has a name (empties don't)
-                i.data.name = "STK{:>03}".format(str(n))
-                n += 1
+                if i.name != i.data.name:
+                    if not re.search("^STK[0-9][0-9][0-9]$",i.data.name): # make sure the data name has not already been changed--this can happen with linked objects
+                        print("OBJ {:>03}".format(str(n)) + ": " + i.name + " > DATA: " + i.data.name)
+                        i.data.name = "STK{:>03}".format(str(n))
+                        print("\trenamed to: " + i.data.name)
+                    else:
+                        print("SKIP: OBJ {:>03}".format(str(n)) + ": " + i.name + " has suspected linked data!")
+                        skipArray.append(i) # add this obj to the skip array
+                else:
+                    print("SKIP: OBJ {:>03}".format(str(n)) + ": " + i.name + " already has synced names!")
+                    skipArray.append(i) # add this obj to the skip array
+            else:
+                print("SKIP: OBJ " + "{:>03}".format(str(n)) + ": " + i.name + " has no named data!")
+                skipArray.append(i) # add this obj index to the skip array
+            n += 1
 
         # rename all data blocks to match their parent objects
         for i in objArray:
-            if hasattr(i.data,"name"): # only if the data has a name (empties don't)
+            if hasattr(i.data,"name") and skipArray.count(i) == 0: # only if the data has a name (empties don't) and if it's not in the skip array
+                print("OBJ: " + i.name + " > DATA: " + i.data.name)
                 i.data.name = i.name
+                print("\trenamed to: " + i.data.name)
         
         print("SyncNames script finished in %.4f sec" % (time.time() - time_start))
         return {'FINISHED'}
