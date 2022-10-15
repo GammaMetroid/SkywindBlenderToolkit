@@ -3,7 +3,7 @@ bl_info= {
     "description": "Scripts to assist with Skywind 3D and Implementation",
     "author": "Gamma_Metroid",
     "blender": (3,3,0),
-    "version": (1,3,1),
+    "version": (1,3,2),
     "support": "COMMUNITY",
     "category": "Object",
 }
@@ -222,11 +222,13 @@ class SyncNames(bpy.types.Operator):
         
         skipArray = list()
 
+        print("\nAnalyzing current names...")
+        
         # first rename them to unique values to prevent any conflicts
         n = 0
         for i in objArray:
             if hasattr(i.data,"name"): # only if the data has a name (empties don't)
-                if i.name != i.data.name:
+                if i.data.name != (i.name + ":data"):
                     if not re.search("^STK[0-9][0-9][0-9]$",i.data.name): # make sure the data name has not already been changed--this can happen with linked objects
                         print("OBJ {:>03}".format(str(n)) + ": " + i.name + " > DATA: " + i.data.name)
                         i.data.name = "STK{:>03}".format(str(n))
@@ -238,15 +240,17 @@ class SyncNames(bpy.types.Operator):
                     print("SKIP: OBJ {:>03}".format(str(n)) + ": " + i.name + " already has synced names!")
                     skipArray.append(i) # add this obj to the skip array
             else:
-                print("SKIP: OBJ " + "{:>03}".format(str(n)) + ": " + i.name + " has no named data!")
-                skipArray.append(i) # add this obj index to the skip array
+                print("SKIP: OBJ {:>03}".format(str(n)) + ": " + i.name + " has no named data!")
+                skipArray.append(i) # add this obj to the skip array
             n += 1
+
+        print("\nAssigning final names...")
 
         # rename all data blocks to match their parent objects
         for i in objArray:
             if hasattr(i.data,"name") and skipArray.count(i) == 0: # only if the data has a name (empties don't) and if it's not in the skip array
                 print("OBJ: " + i.name + " > DATA: " + i.data.name)
-                i.data.name = i.name
+                i.data.name = i.name + ":data"
                 print("\trenamed to: " + i.data.name)
         
         print("SyncNames script finished in %.4f sec" % (time.time() - time_start))
