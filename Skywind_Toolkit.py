@@ -3,7 +3,7 @@ bl_info= {
     "description": "Scripts to assist with Skywind 3D and Implementation",
     "author": "Gamma_Metroid",
     "blender": (3,3,0),
-    "version": (1,3,2),
+    "version": (1,3,3),
     "support": "COMMUNITY",
     "category": "Object",
 }
@@ -26,6 +26,69 @@ class CreateCollision(bpy.types.Operator):
     coll_weld: bpy.props.BoolProperty(name="Weld Vertices", default=True)
     coll_weld_distance: bpy.props.FloatProperty(name="Weld Distance", default=1.00, min=1e-06, max=50)
     coll_expand_distance: bpy.props.FloatProperty(name="Expand Distance", default=3, min=-1000, max=1000)
+    coll_material: bpy.props.EnumProperty(items=[
+        ("SKY_HAV_MAT_BROKEN_STONE", "SKY_HAV_MAT_BROKEN_STONE", "Broken Stone"),
+        ("SKY_HAV_MAT_LIGHT_WOOD", "SKY_HAV_MAT_LIGHT_WOOD", "Light Wood"),
+        ("SKY_HAV_MAT_ASH", "SKY_HAV_MAT_ASH", "Ash"),
+        ("SKY_HAV_MAT_GRAVEL", "SKY_HAV_MAT_GRAVEL", "Gravel"),
+        ("SKY_HAV_MAT_MATERIAL_CHAIN_METAL", "SKY_HAV_MAT_MATERIAL_CHAIN_METAL", "Material Chain Metal"),
+        ("SKY_HAV_MAT_BOTTLE", "SKY_HAV_MAT_BOTTLE", "Bottle"),
+        ("SKY_HAV_MAT_WOOD", "SKY_HAV_MAT_WOOD", "Wood"),
+        ("SKY_HAV_MAT_SKIN", "SKY_HAV_MAT_SKIN", "Skin"),
+        ("SKY_HAV_MAT_UNKNOWN_617099282", "SKY_HAV_MAT_UNKNOWN_617099282", "Unknown in Creation Kit v1.9.32.0. Found in Dawnguard DLC in meshes\dlc01\clutter\dlc01deerskin.nif."),
+        ("SKY_HAV_MAT_BARREL", "SKY_HAV_MAT_BARREL", "Barrel"),
+        ("SKY_HAV_MAT_MATERIAL_CERAMIC_MEDIUM", "SKY_HAV_MAT_MATERIAL_CERAMIC_MEDIUM", "Material Ceramic Medium"),
+        ("SKY_HAV_MAT_MATERIAL_BASKET", "SKY_HAV_MAT_MATERIAL_BASKET", "Material Basket"),
+        ("SKY_HAV_MAT_SHIELD_ALTERNATE", "SKY_HAV_MAT_SHIELD_ALTERNATE", "Ice"),
+        ("SKY_HAV_MAT_STAIRS_STONE", "SKY_HAV_MAT_STAIRS_STONE", "Stairs Stone"),
+        ("SKY_HAV_MAT_WATER", "SKY_HAV_MAT_WATER", "Water"),
+        ("SKY_HAV_MAT_UNKNOWN_1028101969", "SKY_HAV_MAT_UNKNOWN_1028101969", "Unknown in Creation Kit v1.6.89.0. Found in actors\draugr\character assets\skeletons.nif."),
+        ("SKY_HAV_MAT_MATERIAL_BLADE_1HAND", "SKY_HAV_MAT_MATERIAL_BLADE_1HAND", "Material Blade 1 Hand"),
+        ("SKY_HAV_MAT_MATERIAL_BOOK", "SKY_HAV_MAT_MATERIAL_BOOK", "Material Book"),
+        ("SKY_HAV_MAT_MATERIAL_CARPET", "SKY_HAV_MAT_MATERIAL_CARPET", "Material Carpet"),
+        ("SKY_HAV_MAT_LIGHT_METAL", "SKY_HAV_MAT_LIGHT_METAL", "Light Metal"),
+        ("SKY_HAV_MAT_MATERIAL_AXE_1HAND", "SKY_HAV_MAT_MATERIAL_AXE_1HAND", "Material Axe 1Hand"),
+        ("SKY_HAV_MAT_UNKNOWN_1440721808", "SKY_HAV_MAT_UNKNOWN_1440721808", "Unknown in Creation Kit v1.6.89.0. Found in armor\draugr\draugrbootsfemale_go.nif or armor\amuletsandrings\amuletgnd.nif."),
+        ("SKY_HAV_MAT_STAIRS_WOOD", "SKY_HAV_MAT_STAIRS_WOOD", "Stairs Wood"),
+        ("SKY_HAV_MAT_BLADE1HAND_ALTERNATE", "SKY_HAV_MAT_BLADE1HAND_ALTERNATE", "Blade 1Hand Alternate"),
+        ("SKY_HAV_MAT_MATERIAL_ARMOR_ALTERNATE", "SKY_HAV_MAT_MATERIAL_ARMOR_ALTERNATE", "Armor Alternate"),
+        ("SKY_HAV_MAT_STAIRS_ASH", "SKY_HAV_MAT_STAIRS_ASH", "Stairs Ash"),
+        ("SKY_HAV_MAT_PLASTER", "SKY_HAV_MAT_PLASTER", "Plaster"),
+        ("SKY_HAV_MAT_UNKNOWN_1574477864", "SKY_HAV_MAT_UNKNOWN_1574477864", "Unknown in Creation Kit v1.6.89.0. Found in actors\dragon\character assets\skeleton.nif."),
+        ("SKY_HAV_MAT_UNKNOWN_1591009235", "SKY_HAV_MAT_UNKNOWN_1591009235", "Unknown in Creation Kit v1.6.89.0. Found in trap objects or clutter\displaycases\displaycaselgangled01.nif or actors\deer\character assets\skeleton.nif."),
+        ("SKY_HAV_MAT_MATERIAL_BOWS_STAVES_POLEARMS_LIGHT", "SKY_HAV_MAT_MATERIAL_BOWS_STAVES_POLEARMS_LIGHT", "Material Bows Staves and Polearms (Light)"),
+        ("SKY_HAV_MAT_MATERIAL_WOOD_AS_STAIRS", "SKY_HAV_MAT_MATERIAL_WOOD_AS_STAIRS", "Material Wood As Stairs"),
+        ("SKY_HAV_MAT_GRASS", "SKY_HAV_MAT_GRASS", "Grass"),
+        ("SKY_HAV_MAT_MATERIAL_BOWS_STAVES_POLEARMS_HEAVY", "SKY_HAV_MAT_MATERIAL_BOWS_STAVES_POLEARMS_HEAVY", "Bows, Staves, and Polearms (Heavy)"),
+        ("SKY_HAV_MAT_MATERIAL_STONE_AS_STAIRS", "SKY_HAV_MAT_MATERIAL_STONE_AS_STAIRS", "Material Stone As Stairs"),
+        ("SKY_HAV_MAT_MATERIAL_BLADE_2HAND", "SKY_HAV_MAT_MATERIAL_BLADE_2HAND", "Material Blade 2Hand"),
+        ("SKY_HAV_MAT_MATERIAL_BOTTLE_SMALL", "SKY_HAV_MAT_MATERIAL_BOTTLE_SMALL", "Material Bottle Small"),
+        ("SKY_HAV_MAT_SAND", "SKY_HAV_MAT_SAND", "Sand"),
+        ("SKY_HAV_MAT_HEAVY_METAL", "SKY_HAV_MAT_HEAVY_METAL", "Heavy Metal"),
+        ("SKY_HAV_MAT_UNKNOWN_2290050264", "SKY_HAV_MAT_UNKNOWN_2290050264", "Unknown in Creation Kit v1.9.32.0. Found in Dawnguard DLC in meshes\dlc01\clutter\dlc01sabrecatpelt.nif."),
+        ("SKY_HAV_MAT_DRAGON", "SKY_HAV_MAT_DRAGON", "Dragon"),
+        ("SKY_HAV_MAT_MATERIAL_BLADE_1HAND_SMALL", "SKY_HAV_MAT_MATERIAL_BLADE_1HAND_SMALL", "Material Blade 1Hand Small"),
+        ("SKY_HAV_MAT_MATERIAL_SKIN_SMALL", "SKY_HAV_MAT_MATERIAL_SKIN_SMALL", "Material Skin Small"),
+        ("SKY_HAV_MAT_STAIRS_BROKEN_STONE", "SKY_HAV_MAT_STAIRS_BROKEN_STONE", "Stairs Broken Stone"),
+        ("SKY_HAV_MAT_MATERIAL_SKIN_LARGE", "SKY_HAV_MAT_MATERIAL_SKIN_LARGE", "Material Skin Large"),
+        ("SKY_HAV_MAT_ORGANIC", "SKY_HAV_MAT_ORGANIC", "Organic"),
+        ("SKY_HAV_MAT_MATERIAL_BONE", "SKY_HAV_MAT_MATERIAL_BONE", "Material Bone"),
+        ("SKY_HAV_MAT_HEAVY_WOOD", "SKY_HAV_MAT_HEAVY_WOOD", "Heavy Wood"),
+        ("SKY_HAV_MAT_MATERIAL_CHAIN", "SKY_HAV_MAT_MATERIAL_CHAIN", "Material Chain"),
+        ("SKY_HAV_MAT_DIRT", "SKY_HAV_MAT_DIRT", "Dirt"),
+        ("SKY_HAV_MAT_MATERIAL_ARMOR_LIGHT", "SKY_HAV_MAT_MATERIAL_ARMOR_LIGHT", "Material Armor Light"),
+        ("SKY_HAV_MAT_MATERIAL_SHIELD_LIGHT", "SKY_HAV_MAT_MATERIAL_SHIELD_LIGHT", "Material Shield Light"),
+        ("SKY_HAV_MAT_MATERIAL_COIN", "SKY_HAV_MAT_MATERIAL_COIN", "Material Coin"),
+        ("SKY_HAV_MAT_MATERIAL_SHIELD_HEAVY", "SKY_HAV_MAT_MATERIAL_SHIELD_HEAVY", "Material Shield Heavy"),
+        ("SKY_HAV_MAT_MATERIAL_ARMOR_HEAVY", "SKY_HAV_MAT_MATERIAL_ARMOR_HEAVY", "Material Armor Heavy"),
+        ("SKY_HAV_MAT_MATERIAL_ARROW", "SKY_HAV_MAT_MATERIAL_ARROW", "Material Arrow"),
+        ("SKY_HAV_MAT_GLASS", "SKY_HAV_MAT_GLASS", "Glass"),
+        ("SKY_HAV_MAT_STONE", "SKY_HAV_MAT_STONE", "Stone"),
+        ("SKY_HAV_MAT_CLOTH", "SKY_HAV_MAT_CLOTH", "Cloth"),
+        ("SKY_HAV_MAT_MATERIAL_BLUNT_2HAND", "SKY_HAV_MAT_MATERIAL_BLUNT_2HAND", "Material Blunt 2Hand"),
+        ("SKY_HAV_MAT_UNKNOWN_4239621792", "SKY_HAV_MAT_UNKNOWN_4239621792", "Unknown in Creation Kit v1.9.32.0. Found in Dawnguard DLC in meshes\dlc01\prototype\dlc1protoswingingbridge.nif."),
+        ("SKY_HAV_MAT_MATERIAL_STAIRS_PLASTER", "SKY_HAV_MAT_MATERIAL_STAIRS_PLASTER", "Plaster Stairs")
+    ], name="Material", default="SKY_HAV_MAT_WOOD")
         
     def execute(self, context):
         # start timer
@@ -67,14 +130,23 @@ class CreateCollision(bpy.types.Operator):
         # name object
         bpy.context.active_object.name = base_name + "_rb_mopp_mesh"
 
-        # remove materials and UV maps
+        # remove UV maps
         for uv_layers in bpy.context.active_object.data.uv_layers:
             bpy.ops.mesh.uv_texture_remove()
+        # remove materials
+        for material_slots in bpy.context.active_object.material_slots.values():
+            bpy.ops.object.material_slot_remove()
         # remove vertex colors
         for vertex_colors in bpy.context.active_object.data.vertex_colors:
             bpy.ops.mesh.vertex_color_remove()
         # remove custom split normals
         bpy.ops.mesh.customdata_custom_splitnormals_clear()
+        
+        # add a material (user choice)
+        mat = bpy.data.materials.get(self.coll_material)
+        if mat == None:
+            mat = bpy.data.materials.new(name=self.coll_material)
+        bpy.context.active_object.data.materials.append(mat)
 
         # switch to edit mode
         bpy.ops.object.mode_set(mode='EDIT')
@@ -138,6 +210,10 @@ class CreateCollision(bpy.types.Operator):
         bpy.context.view_layer.objects.active = bpy.context.selected_objects[0]
         bpy.ops.object.select_pattern(pattern=base_name + "_rb_mopp_mesh")
         bpy.ops.object.parent_set(keep_transform=True)
+        
+        # select collision mesh object
+        bpy.ops.object.select_pattern(pattern=base_name + "_rb_mopp_mesh",extend=False)
+        bpy.context.view_layer.objects.active = bpy.context.selected_objects[0]
         
         print("Collision script finished in %.4f sec" % (time.time() - time_start))
         return {'FINISHED'}
