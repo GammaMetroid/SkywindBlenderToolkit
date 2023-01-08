@@ -2,6 +2,9 @@ Skywind Toolkit for Blender
 by Gamma_Metroid
 CHANGELOG
 
+1.3.3
+-added material selection to collision function
+
 1.3.2
 -added ":data" to the data blocks to prevent duplicate names in nifs
 
