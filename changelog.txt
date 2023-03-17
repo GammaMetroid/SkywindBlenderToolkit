@@ -2,6 +2,11 @@ Skywind Toolkit for Blender
 by Gamma_Metroid
 CHANGELOG
 
+1.3.4
+-added Copy Vertex Color Channel function
+-added option to retain multiple materials in collision generation
+-fixed bug in collision function if no objects were active
+
 1.3.3
 -added material selection to collision function
 
