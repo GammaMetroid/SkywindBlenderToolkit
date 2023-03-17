@@ -2,6 +2,9 @@ Skywind Toolkit for Blender
 by Gamma_Metroid
 CHANGELOG
 
+1.4.2
+-added ability to copy vertex colors across different objects
+
 1.4.1
 -fixed vertex color copy operating in the wrong color space
 
