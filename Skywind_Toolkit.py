@@ -2,8 +2,8 @@ bl_info= {
     "name": "Skywind Toolkit",
     "description": "Scripts to assist with Skywind 3D and Implementation",
     "author": "Gamma_Metroid",
-    "blender": (3,3,0),
-    "version": (1,4,0),
+    "blender": (3,4,0),
+    "version": (1,4,1),
     "support": "COMMUNITY",
     "category": "Object",
 }
@@ -387,7 +387,7 @@ class VColorCopy(bpy.types.Operator):
         
         # copy values from channel "src" to channel "dst"
         for attr in color_attr:
-            color = attr.color
+            color = attr.color_srgb
             color[dst] = color[src]
                 
         print("VColorCopy script finished in %.4f sec" % (time.time() - time_start))
