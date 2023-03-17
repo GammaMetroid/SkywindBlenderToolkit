@@ -39,3 +39,10 @@ Hotkey: `Ctrl+Alt+N`
 
 Usage Instructions:
 Select all the objects you want to have sync names for, then press the hotkey, and all data blocks will be renamed to match their parent objects.
+
+## Copy Vertex Color Channel
+
+Hotkey: `Ctrl+Alt+V`
+
+Usage Instructions:
+Select the object you want to copy color values within and press the hotkey. Choose which channel to use as source and destination. Can only copy between channels in the same color attribute.
