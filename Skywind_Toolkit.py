@@ -3,7 +3,7 @@ bl_info= {
     "description": "Scripts to assist with Skywind 3D and Implementation",
     "author": "Gamma_Metroid",
     "blender": (3,4,0),
-    "version": (1,4,1),
+    "version": (1,4,2),
     "support": "COMMUNITY",
     "category": "Object",
 }
@@ -360,8 +360,10 @@ class VColorCopy(bpy.types.Operator):
         ]
         return items
     
-    src: bpy.props.EnumProperty(items=channels(), name="Source Channel", default=3)
-    dst: bpy.props.EnumProperty(items=channels(), name="Destination Channel", default=0)
+    src_chan: bpy.props.EnumProperty(items=channels(), name="Source Channel", default=0)
+    dst_chan: bpy.props.EnumProperty(items=channels(), name="Destination Channel", default=0)
+    
+    sta: bpy.props.BoolProperty(name="Selected to Active", default=False)
     
     def execute(self, context):
         time_start = time.time()
@@ -375,20 +377,68 @@ class VColorCopy(bpy.types.Operator):
         # check that the object has vertex colors
         if list(bpy.context.active_object.data.color_attributes) == []:
             raise TypeError("ERROR: active object has no vertex colors")
-            return {'FINISHED'}
+            return {'FINISHED'}        
         
-        # access color attribute
-        # this just grabs the first one. how can i grab the active one?
-        color_attr = bpy.context.active_object.data.color_attributes[0].data
+        # try to predict whether to enable "Selected to Active"
+        if len(bpy.context.selected_objects) == 1:
+            self.sta = False
+        else:
+            self.sta = True
         
-        # cast to int
-        src = int(self.src)
-        dst = int(self.dst)
-        
-        # copy values from channel "src" to channel "dst"
-        for attr in color_attr:
-            color = attr.color_srgb
-            color[dst] = color[src]
+        # if "Selected to Active" is not ticked
+        if not self.sta:
+            # access color attribute
+            # this just grabs the first one. how can i grab the active one?
+            color_attr = bpy.context.active_object.data.color_attributes[0].data
+            
+            # cast to int
+            src_chan = int(self.src_chan)
+            dst_chan = int(self.dst_chan)
+            
+            # copy values from channel "src" to channel "dst"
+            for attr in color_attr:
+                color = attr.color_srgb
+                color[dst_chan] = color[src_chan]
+            
+        elif self.sta: # if "Selected to Active" is ticked
+            act_obj = bpy.context.active_object
+            
+            selection = bpy.context.selected_objects
+            selection.remove(act_obj)
+            
+            if len(selection) > 1:
+                raise TypeError("ERROR: more than one source object selected")
+                return {"FINISHED"}
+            
+            sel_obj = selection[0]
+            
+            print("src obj: " + sel_obj.name)
+            print("src channel: " + self.src_chan)
+            print("dest obj: " + act_obj.name)
+            print("dest channel: " + self.dst_chan)
+            
+            # check to make sure the two objects have the same number of vertices
+            if len(act_obj.data.vertices) != len(sel_obj.data.vertices):
+                raise TypeError("ERROR: Objects do not have the same number of vertices")
+                return {'FINISHED'}
+            
+            # access color attributes
+            # this just grabs the first one. how can i grab the active one?
+            src_color_attr = sel_obj.data.color_attributes[0].data
+            dst_color_attr = act_obj.data.color_attributes[0].data
+            
+            # cast to int
+            src_chan = int(self.src_chan)
+            dst_chan = int(self.dst_chan)
+            
+            # make an array of vertex indices
+            v_ind = [x[0] for x in act_obj.data.vertices.items()]
+            
+            # copy values from channel "src" to channel "dst"
+            for src_attr, dst_attr in zip(src_color_attr,dst_color_attr):
+                src_color = src_attr.color_srgb
+                dst_color = dst_attr.color_srgb
+                dst_color[dst_chan] = src_color[src_chan]
                 
         print("VColorCopy script finished in %.4f sec" % (time.time() - time_start))
         return {'FINISHED'}
