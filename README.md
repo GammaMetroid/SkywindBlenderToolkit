@@ -4,6 +4,7 @@ This addon is a collection of scripts to assist with modeling for Skywind. Curre
 - Create Collision Mesh
 - Create LOD Meshes
 - Sync Object/Mesh Names
+- Copy Vertex Color Channel
 
 ## Create Collision Mesh
 
@@ -45,4 +46,4 @@ Select all the objects you want to have sync names for, then press the hotkey, a
 Hotkey: `Ctrl+Alt+V`
 
 Usage Instructions:
-Select the object you want to copy color values within and press the hotkey. Choose which channel to use as source and destination. Can only copy between channels in the same color attribute.
+Select the object you want to copy color values within and press the hotkey. Choose which channel to use as source and destination. Can copy between channels of the same color attribute, or between color attributes on different objects. Cannot run on different color attributes on the same object.
