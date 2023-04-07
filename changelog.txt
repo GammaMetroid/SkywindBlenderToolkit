@@ -2,6 +2,10 @@ Skywind Toolkit for Blender
 by Gamma_Metroid
 CHANGELOG
 
+1.4.3
+-fixed line in collision script that became broken in 3.4
+-rm vestigial line in vertex color copy script
+
 1.4.2
 -added ability to copy vertex colors across different objects
 
