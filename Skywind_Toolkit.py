@@ -153,8 +153,8 @@ class CreateCollision(bpy.types.Operator):
                 mat = bpy.data.materials.new(name=self.coll_material)
             bpy.context.active_object.data.materials.append(mat)
         # remove vertex colors
-        for vertex_colors in bpy.context.active_object.data.vertex_colors:
-            bpy.ops.mesh.vertex_color_remove()
+        for vertex_colors in bpy.context.active_object.data.color_attributes:
+            bpy.ops.geometry.color_attribute_remove()
         # remove custom split normals
         bpy.ops.mesh.customdata_custom_splitnormals_clear()
 
@@ -430,9 +430,6 @@ class VColorCopy(bpy.types.Operator):
             # cast to int
             src_chan = int(self.src_chan)
             dst_chan = int(self.dst_chan)
-            
-            # make an array of vertex indices
-            v_ind = [x[0] for x in act_obj.data.vertices.items()]
             
             # copy values from channel "src" to channel "dst"
             for src_attr, dst_attr in zip(src_color_attr,dst_color_attr):
