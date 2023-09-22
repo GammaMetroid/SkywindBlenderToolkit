@@ -3,7 +3,7 @@ bl_info= {
     "description": "Scripts to assist with Skywind 3D and Implementation",
     "author": "Gamma_Metroid",
     "blender": (3,4,0),
-    "version": (1,4,2),
+    "version": (1,5,0),
     "support": "COMMUNITY",
     "category": "Object",
 }
@@ -18,7 +18,7 @@ class CreateCollision(bpy.types.Operator):
     # this script will assist with creating Collision meshes, which can then be exported using ck-cmd.
     # holes may still occur, so it is a good idea to check it over first.
 
-    bl_idname = "object.create_collision"
+    bl_idname = "object.createcollision"
     bl_label = "Create Collision Mesh"
     bl_options = {'REGISTER', 'UNDO'}
 
@@ -235,7 +235,7 @@ class CreateLOD(bpy.types.Operator):
     # textures to be atlased, the UVs must all be in the 0..1 range. this must be done
     # manually, either before or after decimation.
 
-    bl_idname = "object.create_lod"
+    bl_idname = "object.createlod"
     bl_label = "Create LOD"
     bl_options = {'REGISTER', 'UNDO'}
 
@@ -341,6 +341,50 @@ class SyncNames(bpy.types.Operator):
         
         print("SyncNames script finished in %.4f sec" % (time.time() - time_start))
         return {'FINISHED'}
+    
+class SplitAssigningNames(bpy.types.Operator):
+    """Split by material, assigning names"""
+    
+    bl_idname = "object.splitassigningnames"
+    bl_label = "Split Assigning Names By Material"
+    bl_options = {'REGISTER', 'UNDO'}
+    
+    def execute(self, context):
+        time_start = time.time()
+        
+        # check that an object is active
+        if bpy.context.active_object == None:
+            raise TypeError("ERROR: no active object")
+            return {'FINISHED'}
+        
+        obj = bpy.context.active_object
+        
+        mats = obj.material_slots
+        
+        for i in mats:
+            if i.material.name.endswith("_material"):
+                i.material.name = i.material.name.replace("_material","")
+        
+        # switch to edit mode
+        bpy.ops.object.mode_set(mode='EDIT')
+        
+        # select all vertices
+        bpy.ops.mesh.select_all(action='SELECT')
+        
+        # separate by material
+        bpy.ops.mesh.separate(type='MATERIAL')
+        
+        # back to object mode
+        bpy.ops.object.mode_set(mode='OBJECT')
+        
+        objArray = bpy.context.selected_objects
+        
+        for i in objArray:
+            i.data.name = i.material_slots[0].material.name
+            i.data.name = i.material_slots[0].material.name # twich for good measure...
+            
+        print("SplitAssigningNames script finished in %.4f sec" % (time.time() - time_start))
+        return {'FINISHED'}
         
 class VColorCopy(bpy.types.Operator):
     """Copy Vertex Color Channel"""
@@ -444,6 +488,7 @@ def menu_func(self, context):
     self.layout.operator(CreateLOD.bl_idname)
     self.layout.operator(CreateCollision.bl_idname)
     self.layout.operator(SyncNames.bl_idname)
+    self.layout.operator(SplitAssigningNames.bl_idname)
     self.layout.operator(VColorCopy.bl_idname)
 
 # store keymaps here to access after registration
@@ -453,6 +498,7 @@ def register():
     bpy.utils.register_class(CreateLOD)
     bpy.utils.register_class(CreateCollision)
     bpy.utils.register_class(SyncNames)
+    bpy.utils.register_class(SplitAssigningNames)
     bpy.utils.register_class(VColorCopy)
     bpy.types.VIEW3D_MT_object.append(menu_func)
 
@@ -473,6 +519,10 @@ def register():
         addon_keymaps.append((km, kmi))
         
         km = wm.keyconfigs.addon.keymaps.new(name='Object Mode', space_type='EMPTY')
+        kmi = km.keymap_items.new(SplitAssigningNames.bl_idname, 'X', 'PRESS', ctrl=True, alt=True)
+        addon_keymaps.append((km, kmi))
+        
+        km = wm.keyconfigs.addon.keymaps.new(name='Object Mode', space_type='EMPTY')
         kmi = km.keymap_items.new(VColorCopy.bl_idname, 'V', 'PRESS', ctrl=True, alt=True)
         addon_keymaps.append((km, kmi))
 
@@ -485,6 +535,7 @@ def unregister():
     bpy.utils.unregister_class(CreateLOD)
     bpy.utils.unregister_class(CreateCollision)
     bpy.utils.unregister_class(SyncNames)
+    bpy.utils.unregister_class(SplitAssigningNames)
     bpy.utils.unregister_class(VColorCopy)
     bpy.types.VIEW3D_MT_object.remove(menu_func)
 
