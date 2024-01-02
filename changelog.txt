@@ -2,6 +2,9 @@ Skywind Toolkit for Blender
 by Gamma_Metroid
 CHANGELOG
 
+1.5.1
+-raise error if active object name is too long in collision script
+
 1.5.0
 -added Split Assigning Materials function
 -fixed some incorrect bl_idnames
