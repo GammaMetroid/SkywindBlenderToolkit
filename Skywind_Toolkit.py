@@ -3,7 +3,7 @@ bl_info= {
     "description": "Scripts to assist with Skywind 3D and Implementation",
     "author": "Gamma_Metroid",
     "blender": (3,4,0),
-    "version": (1,5,0),
+    "version": (1,5,1),
     "support": "COMMUNITY",
     "category": "Object",
 }
@@ -112,6 +112,11 @@ class CreateCollision(bpy.types.Operator):
         
         # get active object name
         base_name = bpy.context.active_object.name
+        
+        # check length. blender's limit is 63 chars and we will be adding 13 so our max is 50
+        if (len(base_name) > 50):
+            raise TypeError("ERROR: Active object name is too long (>50 chars)")
+            return {'FINISHED'}
         
         # recursively traverse layer_collection for a particular name
         def recurLayerCollection(layerColl, collName):
