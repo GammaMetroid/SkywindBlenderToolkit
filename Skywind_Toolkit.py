@@ -3,7 +3,7 @@ bl_info= {
     "description": "Scripts to assist with Skywind 3D and Implementation",
     "author": "Gamma_Metroid",
     "blender": (3,4,0),
-    "version": (1,5,1),
+    "version": (1,5,2),
     "support": "COMMUNITY",
     "category": "Object",
 }
@@ -244,22 +244,19 @@ class CreateLOD(bpy.types.Operator):
     bl_label = "Create LOD"
     bl_options = {'REGISTER', 'UNDO'}
 
-    ratio0: bpy.props.FloatProperty(name="LOD0 Ratio", default=0.2, min=0.01, max=1)
-    ratio1: bpy.props.FloatProperty(name="LOD1 Ratio", default=0.1, min=0.01, max=1)
+    ratio: bpy.props.FloatProperty(name="Decimation Ratio", default=0.2, min=0.01, max=1)
 
     def execute(self, context):
         # start timer
         time_start = time.time()
 
-        def create_lod(level,ratio):
-            # duplicate selection
-            bpy.ops.object.duplicate()
+        def create_lod():
+
+            sel = bpy.context.selected_objects
+            bpy.context.view_layer.objects.active = sel[len(sel)-1]
 
             # join selected objects
             bpy.ops.object.join()
-
-            # name the object
-            bpy.context.active_object.name = level
 
             # switch to edit mode
             bpy.ops.object.mode_set(mode='EDIT')
@@ -273,25 +270,43 @@ class CreateLOD(bpy.types.Operator):
 
             # decimate
             bpy.ops.object.modifier_add(type='DECIMATE')
-            bpy.context.active_object.modifiers["Decimate"].ratio = ratio
+            bpy.context.active_object.modifiers["Decimate"].ratio = self.ratio
             bpy.context.active_object.modifiers["Decimate"].use_collapse_triangulate = True
             bpy.ops.object.modifier_apply(modifier="Decimate")
+            
+            # switch to edit mode
+            bpy.ops.object.mode_set(mode='EDIT')
+            
+            # separate by material
+            bpy.ops.mesh.separate(type='MATERIAL')
+            
+            # switch to object mode
+            bpy.ops.object.mode_set(mode='OBJECT')
 
         # rename all UV maps to "UVMap" for the join
         for obj in bpy.context.selected_objects:
             obj.data.uv_layers.active.name = "UVMap"
 
-        # create lod0
-        create_lod("lod0",self.ratio0)
+        # store names
+        nameArr = list()
+        objs = bpy.context.selected_objects
+        for i in range(0,len(objs)):
+            nameArr.append(objs[i].data.name)
 
-        # select the originals again
-        bpy.ops.object.select_all(action='INVERT')
-
-        # make one of them active
-        bpy.context.view_layer.objects.active = bpy.context.selected_objects[0]
-
-        # create lod1
-        create_lod("lod1",self.ratio1)
+        # create lod
+        create_lod()
+        
+        objs = bpy.context.selected_objects
+        
+        # assign original names
+        for i in range(0,len(objs)):
+            objs[i].data.name = nameArr[i]
+            print('assigning name ' + nameArr[i])
+        
+        # do it again to be sure...
+        for i in range(0,len(objs)):
+            objs[i].data.name = nameArr[i]
+            print('assigning name ' + nameArr[i])
 
         print("LOD script finished in %.4f sec" % (time.time() - time_start))
         return {'FINISHED'}
