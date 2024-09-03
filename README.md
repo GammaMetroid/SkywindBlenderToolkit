@@ -24,16 +24,16 @@ There are a few settings you can use to tweak the result.
 - Weld Distance is the distance between vertices to be welded, if the option is enabled
 - Expand Distance is optional, and will scale the mesh faces along their normals, giving a sort of “buffer” around your object.
 
-## Create LOD Meshes
+## Create LOD Mesh
 
 Hotkey: `Ctrl+Alt+L`
 
-**NOTE**: If your initial model has good topology and is not yet triangulated, it may be easier to make these by hand.
-
 Usage Instructions:
-Select all the objects you want to be part of your LOD model, then press `ctrl+alt+L`. This will create two LOD models with adjustable decimation ratios. You should still separate each model by material before exporting.
+Select all the objects you want to be part of your LOD model, then press `ctrl+alt+L`. This will create an LOD model with an adjustable decimation ratio. Object names are retained to facilitate automatic texture set application with DynDOLOD.
 
-**NOTE**: If your model uses tileable textures and you want it to be atlased (usually you do), you still need to make sure all UVs are in the (0..1) range. That is, no vertices should have UV values less than 0 or greater than 1. This will likely require adjusting UVs.
+A shrink value is provided as well to alleviate z fighting if desired.
+
+**NOTE**: If your model uses tileable textures and you want it to be atlased, you still need to make sure all UVs are in the (0..1) range. That is, no vertices should have UV values less than 0 or greater than 1. This will likely require adjusting UVs.
 
 ## Sync Object/Mesh Names
 
