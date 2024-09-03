@@ -245,6 +245,7 @@ class CreateLOD(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     ratio: bpy.props.FloatProperty(name="Decimation Ratio", default=0.2, min=0.01, max=1)
+    shrink_distance: bpy.props.FloatProperty(name="Shrink Distance", default=-5, min=-1000, max=1000)
 
     def execute(self, context):
         # start timer
@@ -273,6 +274,13 @@ class CreateLOD(bpy.types.Operator):
             
             # switch to edit mode
             bpy.ops.object.mode_set(mode='EDIT')
+            
+            if self.shrink_distance != 0:
+                # shrink
+                bpy.ops.object.mode_set(mode='EDIT')
+                bpy.ops.mesh.select_all(action='SELECT')
+                bpy.ops.transform.shrink_fatten(value=self.shrink_distance)
+                bpy.ops.object.mode_set(mode='OBJECT')
             
             # separate by material
             bpy.ops.mesh.separate(type='MATERIAL')
