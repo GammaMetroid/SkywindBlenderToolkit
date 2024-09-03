@@ -3,7 +3,7 @@ bl_info= {
     "description": "Scripts to assist with Skywind 3D and Implementation",
     "author": "Gamma_Metroid",
     "blender": (3,4,0),
-    "version": (1,5,2),
+    "version": (1,5,3),
     "support": "COMMUNITY",
     "category": "Object",
 }
@@ -252,9 +252,6 @@ class CreateLOD(bpy.types.Operator):
 
         def create_lod():
 
-            sel = bpy.context.selected_objects
-            bpy.context.view_layer.objects.active = sel[len(sel)-1]
-
             # join selected objects
             bpy.ops.object.join()
 
@@ -283,30 +280,33 @@ class CreateLOD(bpy.types.Operator):
             # switch to object mode
             bpy.ops.object.mode_set(mode='OBJECT')
 
+        objs = bpy.context.selected_objects
+        bpy.context.view_layer.objects.active = objs[0]
+
         # rename all UV maps to "UVMap" for the join
-        for obj in bpy.context.selected_objects:
+        for obj in objs:
             obj.data.uv_layers.active.name = "UVMap"
 
         # store names
         nameArr = list()
-        objs = bpy.context.selected_objects
         for i in range(0,len(objs)):
             nameArr.append(objs[i].data.name)
+            print('storing name ' + nameArr[i])
 
         # create lod
         create_lod()
         
         objs = bpy.context.selected_objects
         
-        # assign original names
-        for i in range(0,len(objs)):
-            objs[i].data.name = nameArr[i]
-            print('assigning name ' + nameArr[i])
+        def rename():
+            # assign original names
+            for i in range(0,len(objs)):
+                # pull from the material name but cut off the last nine chars ("_material")
+                objs[i].data.name = objs[i].material_slots[0].name[:-9]
         
-        # do it again to be sure...
-        for i in range(0,len(objs)):
-            objs[i].data.name = nameArr[i]
-            print('assigning name ' + nameArr[i])
+        # must be done twice to prevent ".001" from being appended
+        rename()
+        rename()
 
         print("LOD script finished in %.4f sec" % (time.time() - time_start))
         return {'FINISHED'}
