@@ -4,6 +4,7 @@ CHANGELOG
 
 1.5.3
 -fixed mesh names being assigned incorrectly sometimes in create lod function
+-add shrink parameter to create lod function
 
 1.5.2
 -change create lod function to operate on original objects, retaining names
