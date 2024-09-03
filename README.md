@@ -31,6 +31,8 @@ Hotkey: `Ctrl+Alt+L`
 Usage Instructions:
 Select all the objects you want to be part of your LOD model, then press `ctrl+alt+L`. This will create an LOD model with an adjustable decimation ratio. Object names are retained to facilitate automatic texture set application with DynDOLOD.
 
+A shrink value is provided as well to alleviate z fighting if desired.
+
 **NOTE**: If your model uses tileable textures and you want it to be atlased, you still need to make sure all UVs are in the (0..1) range. That is, no vertices should have UV values less than 0 or greater than 1. This will likely require adjusting UVs.
 
 ## Sync Object/Mesh Names
