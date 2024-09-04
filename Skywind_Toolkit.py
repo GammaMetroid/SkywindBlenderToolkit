@@ -3,7 +3,7 @@ bl_info= {
     "description": "Scripts to assist with Skywind 3D and Implementation",
     "author": "Gamma_Metroid",
     "blender": (3,4,0),
-    "version": (1,5,3),
+    "version": (1,5,4),
     "support": "COMMUNITY",
     "category": "Object",
 }
@@ -246,6 +246,7 @@ class CreateLOD(bpy.types.Operator):
 
     ratio: bpy.props.FloatProperty(name="Decimation Ratio", default=0.2, min=0.01, max=1)
     shrink_distance: bpy.props.FloatProperty(name="Shrink Distance", default=-5, min=-1000, max=1000)
+    weld_distance: bpy.props.FloatProperty(name="Weld Distance", default=1.0, min=0, max=1000)
 
     def execute(self, context):
         # start timer
@@ -261,7 +262,7 @@ class CreateLOD(bpy.types.Operator):
 
             # merge vertices by distance
             bpy.ops.mesh.select_all(action='SELECT')
-            bpy.ops.mesh.remove_doubles(threshold=0.01, use_sharp_edge_from_normals=True)
+            bpy.ops.mesh.remove_doubles(threshold=self.weld_distance, use_sharp_edge_from_normals=True)
 
             # switch to object mode
             bpy.ops.object.mode_set(mode='OBJECT')
