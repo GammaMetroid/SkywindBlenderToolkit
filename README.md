@@ -1,6 +1,6 @@
 # Skywind Blender Toolkit
 
-This addon is a collection of scripts to assist with modeling for Skywind. Currently it contains five functions:
+This addon is a collection of scripts to assist with modeling for Skywind. Currently it contains six functions:
 - Create Collision Mesh
 - Create LOD Meshes
 - Sync Object/Mesh Names
