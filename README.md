@@ -6,6 +6,7 @@ This addon is a collection of scripts to assist with modeling for Skywind. Curre
 - Sync Object/Mesh Names
 - Split Assigning Names
 - Copy Vertex Color Channel
+- Bend Normals
 
 ## Create Collision Mesh
 
