@@ -3,7 +3,7 @@ bl_info= {
     "description": "Scripts to assist with Skywind 3D and Implementation",
     "author": "Gamma_Metroid",
     "blender": (3,4,0),
-    "version": (1,5,4),
+    "version": (1,6,0),
     "support": "COMMUNITY",
     "category": "Object",
 }
@@ -11,6 +11,7 @@ bl_info= {
 import bpy
 import time
 import re # regex
+from mathutils import Vector
 
 class CreateCollision(bpy.types.Operator):
     """Create Collision Mesh"""
@@ -296,12 +297,6 @@ class CreateLOD(bpy.types.Operator):
         for obj in objs:
             obj.data.uv_layers.active.name = "UVMap"
 
-        # store names
-        nameArr = list()
-        for i in range(0,len(objs)):
-            nameArr.append(objs[i].data.name)
-            print('storing name ' + nameArr[i])
-
         # create lod
         create_lod()
         
@@ -512,6 +507,60 @@ class VColorCopy(bpy.types.Operator):
                 
         print("VColorCopy script finished in %.4f sec" % (time.time() - time_start))
         return {'FINISHED'}
+    
+class BendNormals(bpy.types.Operator):
+    """Bend normals on faces"""
+    
+    # copy vertex color values from one channel to another
+    
+    bl_idname = "object.bendnormals"
+    bl_label = "Bend normals on faces"
+    bl_options = {'REGISTER', 'UNDO'}
+    
+    def execute(self, context):
+        time_start = time.time()
+        print("Beginning bend normals...")
+        
+        # separate by material
+        bpy.ops.mesh.separate(type='SELECTED')
+        
+        # switch to object mode
+        bpy.ops.object.mode_set(mode='OBJECT')
+        
+        # select (and make active) second object only (the new one)
+        objs = bpy.context.selected_objects
+        obj = objs[1]
+        bpy.context.view_layer.objects.active = obj
+        bpy.ops.object.select_pattern(pattern=obj.name,extend=False)
+        
+        # create sphere (NOT bounding sphere but thats ok)
+        local_bbox_center = 0.125 * sum((Vector(b) for b in obj.bound_box), Vector())
+        global_bbox_center = obj.matrix_world @ local_bbox_center
+        radius = 0.5 * max(obj.dimensions)
+        bpy.ops.mesh.primitive_uv_sphere_add(radius=radius, location=global_bbox_center)
+        
+        sph = bpy.context.selected_objects[0]
+
+        # smooth
+        bpy.ops.object.shade_smooth()
+        
+        # select target obj but keep the sphere active
+        bpy.ops.object.select_pattern(pattern=obj.name)
+        
+        # transfer normals from sphere to target
+        bpy.ops.object.data_transfer(data_type='CUSTOM_NORMAL',vert_mapping='POLYINTERP_NEAREST')
+        
+        # delet sphere
+        bpy.context.view_layer.objects.active = sph
+        bpy.ops.object.select_pattern(pattern=sph.name,extend=False)
+        bpy.ops.object.delete()
+        
+        # select our object again
+        bpy.context.view_layer.objects.active = obj
+        bpy.ops.object.select_pattern(pattern=obj.name,extend=False)
+                
+        print("Bend normals script finished in %.4f sec" % (time.time() - time_start))
+        return {'FINISHED'}
 
 def menu_func(self, context):
     self.layout.operator(CreateLOD.bl_idname)
@@ -519,6 +568,7 @@ def menu_func(self, context):
     self.layout.operator(SyncNames.bl_idname)
     self.layout.operator(SplitAssigningNames.bl_idname)
     self.layout.operator(VColorCopy.bl_idname)
+    self.layout.operator(BendNormals.bl_idname)
 
 # store keymaps here to access after registration
 addon_keymaps = []
@@ -529,6 +579,7 @@ def register():
     bpy.utils.register_class(SyncNames)
     bpy.utils.register_class(SplitAssigningNames)
     bpy.utils.register_class(VColorCopy)
+    bpy.utils.register_class(BendNormals)
     bpy.types.VIEW3D_MT_object.append(menu_func)
 
     # handle the keymap
@@ -553,6 +604,10 @@ def register():
         
         km = wm.keyconfigs.addon.keymaps.new(name='Object Mode', space_type='EMPTY')
         kmi = km.keymap_items.new(VColorCopy.bl_idname, 'V', 'PRESS', ctrl=True, alt=True)
+        addon_keymaps.append((km, kmi))
+        
+        km = wm.keyconfigs.addon.keymaps.new(name='Mesh', space_type='EMPTY')
+        kmi = km.keymap_items.new(BendNormals.bl_idname, 'S', 'PRESS', ctrl=True, alt=True)
         addon_keymaps.append((km, kmi))
 
 def unregister():

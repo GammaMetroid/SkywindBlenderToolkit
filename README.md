@@ -1,11 +1,12 @@
 # Skywind Blender Toolkit
 
-This addon is a collection of scripts to assist with modeling for Skywind. Currently it contains five functions:
+This addon is a collection of scripts to assist with modeling for Skywind. Currently it contains six functions:
 - Create Collision Mesh
 - Create LOD Meshes
 - Sync Object/Mesh Names
 - Split Assigning Names
 - Copy Vertex Color Channel
+- Bend Normals
 
 ## Create Collision Mesh
 
@@ -55,3 +56,10 @@ Hotkey: `Ctrl+Alt+V`
 
 Usage Instructions:
 Select the object you want to copy color values within and press the hotkey. Choose which channel to use as source and destination. Can copy between channels of the same color attribute, or between color attributes on different objects. Cannot run on different color attributes on the same object.
+
+## Bend Normals
+
+Hotkey: `Ctrl+Alt+S`
+
+Usage Instructions:
+In edit mode, select the faces you want to have bent normals and press the hotkey.

@@ -2,6 +2,9 @@ Skywind Toolkit for Blender
 by Gamma_Metroid
 CHANGELOG
 
+1.6.0
+-added Bend Normals function
+
 1.5.4
 -added weld distance parameter to create lod function
 
