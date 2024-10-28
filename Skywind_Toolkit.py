@@ -91,7 +91,7 @@ class CreateCollision(bpy.types.Operator):
 
     coll_ratio: bpy.props.FloatProperty(name="Decimation Ratio", default=0.1, min=0.01, max=1)
     coll_weld: bpy.props.BoolProperty(name="Weld Vertices", default=True)
-    coll_weld_distance: bpy.props.FloatProperty(name="Weld Distance", default=1.00, min=1e-06, max=50)
+    coll_weld_distance: bpy.props.FloatProperty(name="Weld Distance", default=0.01, min=1e-06, max=50)
     coll_expand_distance: bpy.props.FloatProperty(name="Expand Distance", default=3, min=-1000, max=1000)
     coll_single_material: bpy.props.BoolProperty(name="Single Material", default=True)
     coll_material: bpy.props.EnumProperty(items=nif_materials(), name="Material", default="SKY_HAV_MAT_WOOD")
@@ -562,6 +562,55 @@ class BendNormals(bpy.types.Operator):
         print("Bend normals script finished in %.4f sec" % (time.time() - time_start))
         return {'FINISHED'}
 
+class MergeAndWeight(bpy.types.Operator):
+    """Merge verts and Weight Normals"""
+    
+    # copy vertex color values from one channel to another
+    
+    bl_idname = "object.mnergeandweight"
+    bl_label = "Merge vertices and weight normals"
+    bl_options = {'REGISTER', 'UNDO'}
+    
+    weld_distance: bpy.props.FloatProperty(name="Weld Distance", default=0.01, min=1e-06, max=50)
+    weight: bpy.props.IntProperty(name="Weight", default=50, min=1, max=100)
+    keep_sharp: bpy.props.BoolProperty(name="Keep Sharp", default=True)
+    apply: bpy.props.BoolProperty(name="Apply Weighted Normal Modifier", default=True)
+    
+    def weight_modes():
+        items = [
+            ("FACE_AREA", "Face Area", ""),
+            ("CORNER_ANGLE", "Corner Angle", ""),
+            ("FACE_AREA_WITH_ANGLE", "Face Area & Angle", "")
+        ]
+        return items
+    
+    weight_mode: bpy.props.EnumProperty(items=weight_modes(), name="Weight Mode", default=2)
+    
+    def execute(self, context):
+        time_start = time.time()
+        print("Beginning merge and weight...")
+        
+        obj = bpy.context.active_object
+        
+        # switch to edit mode
+        bpy.ops.object.mode_set(mode='EDIT')
+        
+        # weld vertices
+        bpy.ops.mesh.select_all(action='SELECT')
+        bpy.ops.mesh.remove_doubles(threshold=self.weld_distance, use_sharp_edge_from_normals=self.keep_sharp)
+        
+        # add weighted normal modifier and apply if desired
+        mod = obj.modifiers.new(name='wnm',type='WEIGHTED_NORMAL')
+        mod.mode = self.weight_mode
+        mod.weight = self.weight
+        mod.keep_sharp = self.keep_sharp
+        bpy.ops.object.mode_set(mode='OBJECT')
+        if self.apply:
+            bpy.ops.object.modifier_apply(modifier='wnm')
+        
+        print("Merge and weight script finished in %.4f sec" % (time.time() - time_start))
+        return {'FINISHED'}
+
 def menu_func(self, context):
     self.layout.operator(CreateLOD.bl_idname)
     self.layout.operator(CreateCollision.bl_idname)
@@ -569,6 +618,7 @@ def menu_func(self, context):
     self.layout.operator(SplitAssigningNames.bl_idname)
     self.layout.operator(VColorCopy.bl_idname)
     self.layout.operator(BendNormals.bl_idname)
+    self.layout.operator(MergeAndWeight.bl_idname)
 
 # store keymaps here to access after registration
 addon_keymaps = []
@@ -580,6 +630,7 @@ def register():
     bpy.utils.register_class(SplitAssigningNames)
     bpy.utils.register_class(VColorCopy)
     bpy.utils.register_class(BendNormals)
+    bpy.utils.register_class(MergeAndWeight)
     bpy.types.VIEW3D_MT_object.append(menu_func)
 
     # handle the keymap
@@ -609,6 +660,10 @@ def register():
         km = wm.keyconfigs.addon.keymaps.new(name='Mesh', space_type='EMPTY')
         kmi = km.keymap_items.new(BendNormals.bl_idname, 'S', 'PRESS', ctrl=True, alt=True)
         addon_keymaps.append((km, kmi))
+        
+        km = wm.keyconfigs.addon.keymaps.new(name='Object Mode', space_type='EMPTY')
+        kmi = km.keymap_items.new(MergeAndWeight.bl_idname, 'M', 'PRESS', ctrl=True, alt=True)
+        addon_keymaps.append((km, kmi))
 
 def unregister():
     # handle the keymap
@@ -621,6 +676,8 @@ def unregister():
     bpy.utils.unregister_class(SyncNames)
     bpy.utils.unregister_class(SplitAssigningNames)
     bpy.utils.unregister_class(VColorCopy)
+    bpy.utils.unregister_class(BendNormals)
+    bpy.utils.unregister_class(MergeAndWeight)
     bpy.types.VIEW3D_MT_object.remove(menu_func)
 
 if __name__ == "__main__":
