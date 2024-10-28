@@ -2,6 +2,10 @@ Skywind Toolkit for Blender
 by Gamma_Metroid
 CHANGELOG
 
+1.7.0
+-added Merge and Weight function
+-cleanup
+
 1.6.0
 -added Bend Normals function
 
