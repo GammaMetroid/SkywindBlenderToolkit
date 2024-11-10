@@ -2,6 +2,10 @@ Skywind Toolkit for Blender
 by Gamma_Metroid
 CHANGELOG
 
+1.8.0
+-added Mirror Custom Normals function
+-minor cleanup
+
 1.7.0
 -added Merge and Weight function
 -cleanup
