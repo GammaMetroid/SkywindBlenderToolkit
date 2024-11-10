@@ -8,6 +8,7 @@ This addon is a collection of scripts to assist with modeling for Skywind. Curre
 - Copy Vertex Color Channel
 - Bend Normals
 - Merge Vertices and Weight Normals
+- Mirror Object Keeping Custom Normals
 
 ## Create Collision Mesh
 
@@ -71,3 +72,10 @@ Hotkey: `Ctrl+Alt+M`
 
 Usage Instructions:
 In object mode, select an object, and press the hotkey. It will have overlapping vertices welded and a weighted normals modifier applied. There are a few options to change properties of the modifier.
+
+## Mirror Object Keeping Custom Normals
+
+Hotkey: `Ctrl+Alt+K`
+
+Usage Instructions:
+Trying to mirror an object, either by using the mirror modifier and applying, or by scaling the mesh by a negative number, will always destroy any custom normal data. This function provides a way to mirror an object while keeping custom normals intact. To use it, select the object and press the hotkey. You can choose which axis to mirror across.
