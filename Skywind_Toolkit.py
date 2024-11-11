@@ -3,7 +3,7 @@ bl_info= {
     "description": "Scripts to assist with Skywind 3D and Implementation",
     "author": "Gamma_Metroid",
     "blender": (3,4,0),
-    "version": (1,8,0),
+    "version": (1,8,1),
     "support": "COMMUNITY",
     "category": "Object",
 }
@@ -642,27 +642,34 @@ class MirrorCustomNormals(bpy.types.Operator):
             case 'z':
                 Zmult = -1
         
-        obj = bpy.context.active_object
-        data = obj.data
+        sel = bpy.context.selected_objects
         
-        data.calc_normals_split()
-        data.use_auto_smooth = True
-        
-        mirror_split_normals = []
-        for iter_poly in data.polygons:
-            reverse_normals_indices = [iter_poly.loop_indices[0]] + [i for i in reversed(iter_poly.loop_indices[1:])]
-            for i in reverse_normals_indices:
-                mirror_split_normals.append((data.loops[i].normal[0] * Xmult, data.loops[i].normal[1] * Ymult, data.loops[i].normal[2] * Zmult))
+        for obj in sel:
+            # skip if not a mesh object
+            if obj.type != 'MESH':
+                print(obj.name + " is not a mesh. skipping");
+                continue;
+            
+            data = obj.data
+            
+            data.calc_normals_split()
+            data.use_auto_smooth = True
+            
+            mirror_split_normals = []
+            for iter_poly in data.polygons:
+                reverse_normals_indices = [iter_poly.loop_indices[0]] + [i for i in reversed(iter_poly.loop_indices[1:])]
+                for i in reverse_normals_indices:
+                    mirror_split_normals.append((data.loops[i].normal[0] * Xmult, data.loops[i].normal[1] * Ymult, data.loops[i].normal[2] * Zmult))
 
-        # mirror vertices in axis by multiplying axis by -1
-        for v in data.vertices:
-            v.co = v.co[0] * Xmult, v.co[1] * Ymult, v.co[2] * Zmult
+            # mirror vertices in axis by multiplying axis by -1
+            for v in data.vertices:
+                v.co = v.co[0] * Xmult, v.co[1] * Ymult, v.co[2] * Zmult
 
-        # flip face normals if an odd numer of axes are mirrored
-        if (Xmult * Ymult * Zmult < 0):
-            data.flip_normals()
-        # apply mirrored split normals
-        data.normals_split_custom_set(mirror_split_normals)
+            # flip face normals if an odd numer of axes are mirrored
+            if (Xmult * Ymult * Zmult < 0):
+                data.flip_normals()
+            # apply mirrored split normals
+            data.normals_split_custom_set(mirror_split_normals)
         
         print("Mirror custom normals script finished in %.4f sec" % (time.time() - time_start))
         return {'FINISHED'}

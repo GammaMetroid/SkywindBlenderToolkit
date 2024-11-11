@@ -78,4 +78,4 @@ In object mode, select an object, and press the hotkey. It will have overlapping
 Hotkey: `Ctrl+Alt+K`
 
 Usage Instructions:
-Trying to mirror an object, either by using the mirror modifier and applying, or by scaling the mesh by a negative number, will always destroy any custom normal data. This function provides a way to mirror an object while keeping custom normals intact. To use it, select the object and press the hotkey. You can choose which axis to mirror across.
+Trying to mirror an object, either by using the mirror modifier and applying, or by scaling the mesh by a negative number, will always destroy any custom normal data. This function provides a way to mirror an object while keeping custom normals intact. To use it, select the object or objects and press the hotkey. You can choose which axis to mirror across.
