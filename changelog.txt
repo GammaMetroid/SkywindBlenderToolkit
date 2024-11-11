@@ -2,6 +2,10 @@ Skywind Toolkit for Blender
 by Gamma_Metroid
 CHANGELOG
 
+1.8.1
+-Mirror Custom Normals now works on multiple objects
+-Mirror Custom Normals now checks to make sure the object is a mesh
+
 1.8.0
 -added Mirror Custom Normals function
 -minor cleanup
