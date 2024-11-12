@@ -3,7 +3,7 @@ bl_info= {
     "description": "Scripts to assist with Skywind 3D and Implementation",
     "author": "Gamma_Metroid",
     "blender": (3,4,0),
-    "version": (1,8,1),
+    "version": (1,8,2),
     "support": "COMMUNITY",
     "category": "Object",
 }
@@ -324,6 +324,8 @@ class SyncNames(bpy.types.Operator):
     bl_label = "Sync Object/Mesh Names"
     bl_options = {'REGISTER', 'UNDO'}
     
+    suffix: bpy.props.BoolProperty(name="Append suffix to mesh data", default=False)
+    
     def execute(self, context):
         time_start = time.time()
         print("Beginning name sync...")
@@ -338,7 +340,7 @@ class SyncNames(bpy.types.Operator):
         n = 0
         for i in objArray:
             if hasattr(i.data,"name"): # only if the data has a name (empties don't)
-                if i.data.name != (i.name + ":data"):
+                if (i.data.name != (i.name + ":data") and self.suffix) or (i.data.name != i.name and not self.suffix):
                     if not re.search("^STK[0-9][0-9][0-9]$",i.data.name): # make sure the data name has not already been changed--this can happen with linked objects
                         print("OBJ {:>03}".format(str(n)) + ": " + i.name + " > DATA: " + i.data.name)
                         i.data.name = "STK{:>03}".format(str(n))
@@ -360,7 +362,10 @@ class SyncNames(bpy.types.Operator):
         for i in objArray:
             if hasattr(i.data,"name") and skipArray.count(i) == 0: # only if the data has a name (empties don't) and if it's not in the skip array
                 print("OBJ: " + i.name + " > DATA: " + i.data.name)
-                i.data.name = i.name + ":data"
+                if self.suffix:
+                    i.data.name = i.name + ":data"
+                else:
+                    i.data.name = i.name
                 print("\trenamed to: " + i.data.name)
         
         print("SyncNames script finished in %.4f sec" % (time.time() - time_start))
