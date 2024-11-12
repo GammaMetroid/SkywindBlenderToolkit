@@ -2,6 +2,9 @@ Skywind Toolkit for Blender
 by Gamma_Metroid
 CHANGELOG
 
+1.8.2
+-made adding suffix optional in Sync Names
+
 1.8.1
 -Mirror Custom Normals now works on multiple objects
 -Mirror Custom Normals now checks to make sure the object is a mesh
