@@ -2,6 +2,9 @@ Skywind Toolkit for Blender
 by Gamma_Metroid
 CHANGELOG
 
+1.8.3
+-Split Assigning Names now assigns object name in addition to inner data name
+
 1.8.2
 -made adding suffix optional in Sync Names
 
