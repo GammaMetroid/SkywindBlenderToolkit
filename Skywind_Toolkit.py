@@ -3,7 +3,7 @@ bl_info= {
     "description": "Scripts to assist with Skywind 3D and Implementation",
     "author": "Gamma_Metroid",
     "blender": (3,4,0),
-    "version": (1,8,2),
+    "version": (1,8,3),
     "support": "COMMUNITY",
     "category": "Object",
 }
@@ -410,7 +410,9 @@ class SplitAssigningNames(bpy.types.Operator):
         
         for i in objArray:
             i.data.name = i.material_slots[0].material.name
-            i.data.name = i.material_slots[0].material.name # twich for good measure...
+            i.data.name = i.material_slots[0].material.name
+            i.name = i.material_slots[0].material.name
+            i.name = i.material_slots[0].material.name
             
         print("SplitAssigningNames script finished in %.4f sec" % (time.time() - time_start))
         return {'FINISHED'}
