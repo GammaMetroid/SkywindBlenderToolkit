@@ -3,7 +3,7 @@ bl_info= {
     "description": "Scripts to assist with Skywind 3D and Implementation",
     "author": "Gamma_Metroid",
     "blender": (3,4,0),
-    "version": (1,8,3),
+    "version": (1,8,4),
     "support": "COMMUNITY",
     "category": "Object",
 }
@@ -167,6 +167,9 @@ class CreateCollision(bpy.types.Operator):
         # switch to edit mode
         bpy.ops.object.mode_set(mode='EDIT')
 
+        # unhide everything
+        bpy.ops.mesh.reveal()
+
         if self.coll_weld == True:
             # merge vertices by distance
             bpy.ops.mesh.select_all(action='SELECT')
@@ -235,7 +238,7 @@ class CreateCollision(bpy.types.Operator):
         return {'FINISHED'}
 
 class CreateLOD(bpy.types.Operator):
-    """Create LOD Meshes"""
+    """Create LOD Mesh"""
 
     # this script will assist with creating LOD meshes. however, if you want your LOD
     # textures to be atlased, the UVs must all be in the 0..1 range. this must be done
@@ -260,6 +263,9 @@ class CreateLOD(bpy.types.Operator):
 
             # switch to edit mode
             bpy.ops.object.mode_set(mode='EDIT')
+
+            # unhide everything
+            bpy.ops.mesh.reveal()
 
             # merge vertices by distance
             bpy.ops.mesh.select_all(action='SELECT')
@@ -305,8 +311,9 @@ class CreateLOD(bpy.types.Operator):
         def rename():
             # assign original names
             for i in range(0,len(objs)):
-                # pull from the material name but cut off the last nine chars ("_material")
-                objs[i].data.name = objs[i].material_slots[0].name[:-9]
+                # pull from the material name
+                objs[i].name = objs[i].material_slots[0].name
+                objs[i].data.name = objs[i].material_slots[0].name
         
         # must be done twice to prevent ".001" from being appended
         rename()
