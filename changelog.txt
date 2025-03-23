@@ -1,6 +1,9 @@
 Skywind Toolkit for Blender
 by Gamma_Metroid
 CHANGELOG
+1.8.4
+-fixed hidden vertices not getting welded in Create Collision Mesh and Create LOD Mesh
+-made Create LOD Mesh name both object and interior data
 
 1.8.3
 -Split Assigning Names now assigns object name in addition to inner data name
