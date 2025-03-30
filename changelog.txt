@@ -1,6 +1,9 @@
 Skywind Toolkit for Blender
 by Gamma_Metroid
 CHANGELOG
+1.8.5
+-updated collision materials
+
 1.8.4
 -fixed hidden vertices not getting welded in Create Collision Mesh and Create LOD Mesh
 -made Create LOD Mesh name both object and interior data
