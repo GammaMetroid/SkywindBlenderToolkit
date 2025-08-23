@@ -3,7 +3,7 @@ bl_info= {
     "description": "Scripts to assist with Skywind 3D and Implementation",
     "author": "Gamma_Metroid",
     "blender": (3,4,0),
-    "version": (1,8,5),
+    "version": (1,8,6),
     "support": "COMMUNITY",
     "category": "Object",
 }
@@ -241,11 +241,13 @@ class CreateCollision(bpy.types.Operator):
         if need_mopp == True:
             bpy.ops.object.add(type='EMPTY')
             bpy.context.active_object.name = base_name + "_rb_mopp"
+            bpy.context.active_object.name = base_name + "_rb_mopp"
             if collection != bpy.context.active_object.users_collection[0].name: # is the original object not in the active collection?
                 bpy.data.collections[collection].objects.link(bpy.context.active_object) # add to our original object's collection
                 bpy.ops.collection.objects_remove_active() # remove from active collection
         if need_rb == True:
             bpy.ops.object.add(type='EMPTY')
+            bpy.context.active_object.name = base_name + "_rb"
             bpy.context.active_object.name = base_name + "_rb"
             if collection != bpy.context.active_object.users_collection[0].name:
                 bpy.data.collections[collection].objects.link(bpy.context.active_object) # add to our original object's collection
