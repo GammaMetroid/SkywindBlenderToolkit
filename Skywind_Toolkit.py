@@ -23,6 +23,8 @@ class CreateCollision(bpy.types.Operator):
     bl_label = "Create Collision Mesh"
     bl_options = {'REGISTER', 'UNDO'}
 
+    # commented materials are used in nifs but do not correspond to a material type in Skyrim.esm
+    # so they are not usable
     def nif_materials():
         items=[
             ("SKY_HAV_MAT_BROKEN_STONE","Broken Stone","Broken Stone"),
@@ -39,7 +41,7 @@ class CreateCollision(bpy.types.Operator):
             ("SKY_HAV_MAT_MATERIAL_ASH","Material Ash","Material Ash"),
             ("SKY_HAV_MAT_SKIN","Skin","Skin"),
             ("SKY_HAV_MAT_MATERIAL_BLOCK_BLUNT","Material Block Blunt","Material Block Blunt"),
-            ("SKY_HAV_MAT_MATERIAL_CLOTH","Material Cloth","Material Cloth"),
+#            ("SKY_HAV_MAT_MATERIAL_CLOTH","Material Cloth","Material Cloth"),
             ("SKY_HAV_MAT_INSECT","Insect","Insect"),
             ("SKY_HAV_MAT_BARREL","Barrel","Barrel"),
             ("SKY_HAV_MAT_MATERIAL_CERAMIC_MEDIUM","Material Ceramic Medium","Material Ceramic Medium"),
@@ -48,7 +50,7 @@ class CreateCollision(bpy.types.Operator):
             ("SKY_HAV_MAT_STAIRS_GLASS","Stairs Glass","Stairs Glass"),
             ("SKY_HAV_MAT_STAIRS_STONE","Stairs Stone","Stairs Stone"),
             ("SKY_HAV_MAT_WATER","Water","Water"),
-            ("SKY_HAV_MAT_MATERIAL_BONE_ACTOR","Material Bone Actor","Material Bone Actor"),
+#            ("SKY_HAV_MAT_MATERIAL_BONE_ACTOR","Material Bone Actor","Material Bone Actor"),
             ("SKY_HAV_MAT_MATERIAL_BLADE_1HAND","Material Blade 1Hand","Material Blade 1Hand"),
             ("SKY_HAV_MAT_MATERIAL_BOOK","Material Book","Material Book"),
             ("SKY_HAV_MAT_MATERIAL_CARPET","Material Carpet","Material Carpet"),
@@ -56,7 +58,7 @@ class CreateCollision(bpy.types.Operator):
             ("SKY_HAV_MAT_MATERIAL_AXE_1HAND","Material Axe 1Hand","Material Axe 1Hand"),
             ("SKY_HAV_MAT_MATERIAL_BLOCK_BLADE_2HAND","Material Block Blade 2Hand","Material Block Blade 2Hand"),
             ("SKY_HAV_MAT_ORGANIC_LARGE","Organic Large","Organic Large"),
-            ("SKY_HAV_MAT_CHAIN_METAL","Chain Metal","Chain Metal"),
+#            ("SKY_HAV_MAT_CHAIN_METAL","Chain Metal","Chain Metal"),
             ("SKY_HAV_MAT_STAIRS_WOOD","Stairs Wood","Stairs Wood"),
             ("SKY_HAV_MAT_MUD","Mud","Mud"),
             ("SKY_HAV_MAT_MATERIAL_BOULDER_SMALL","Material Boulder Small","Material Boulder Small"),
@@ -65,12 +67,12 @@ class CreateCollision(bpy.types.Operator):
             ("SKY_HAV_MAT_CHARACTER_BUMPER","Character Bumper","Character Bumper"),
             ("SKY_HAV_MAT_TRAP","Trap","Trap"),
             ("SKY_HAV_MAT_MATERIAL_BOWS_STAVES","Material Bows Staves","Material Bows Staves"),
-            ("SKY_HAV_MAT_MATERIAL_SOLID_METAL","Material Solid Metal","Material Solid Metal"),
+#            ("SKY_HAV_MAT_MATERIAL_SOLID_METAL","Material Solid Metal","Material Solid Metal"),
             ("SKY_HAV_MAT_ALDUIN","Alduin","Alduin"),
-            ("SKY_HAV_MAT_MATERIAL_WOOD_MEDIUM","Material Wood Medium","Material Wood Medium"),
+#            ("SKY_HAV_MAT_MATERIAL_WOOD_MEDIUM","Material Wood Medium","Material Wood Medium"),
             ("SKY_HAV_MAT_MATERIAL_BLOCK_BOWS_STAVES","Material Block Bows Staves","Material Block Bows Staves"),
             ("SKY_HAV_MAT_MATERIAL_WOOD_AS_STAIRS","Material Wood As Stairs","Material Wood As Stairs"),
-            ("SKY_HAV_MAT_MATERIAL_BLADE_2HAND_","Material Blade 2Hand ","Material Blade 2Hand "),
+#            ("SKY_HAV_MAT_MATERIAL_BLADE_2HAND_","Material Blade 2Hand ","Material Blade 2Hand "),
             ("SKY_HAV_MAT_GRASS","Grass","Grass"),
             ("SKY_HAV_MAT_MATERIAL_BOULDER_LARGE","Material Boulder Large","Material Boulder Large"),
             ("SKY_HAV_MAT_MATERIAL_STONE_AS_STAIRS","Material Stone As Stairs","Material Stone As Stairs"),
@@ -79,13 +81,14 @@ class CreateCollision(bpy.types.Operator):
             ("SKY_HAV_MAT_BONE_ACTOR","Bone Actor","Bone Actor"),
             ("SKY_HAV_MAT_SAND","Sand","Sand"),
             ("SKY_HAV_MAT_HEAVY_METAL","Heavy Metal","Heavy Metal"),
-            ("SKY_HAV_MAT_MATERIAL_WOOD_HEAVY","Material Wood Heavy","Material Wood Heavy"),
+#            ("SKY_HAV_MAT_MATERIAL_WOOD_HEAVY","Material Wood Heavy","Material Wood Heavy"),
             ("SKY_HAV_MAT_MATERIAL_ICE_FORM","Material Ice Form","Material Ice Form"),
             ("SKY_HAV_MAT_DRAGON","Dragon","Dragon"),
             ("SKY_HAV_MAT_MATERIAL_BLADE_1HAND_SMALL","Material Blade 1Hand Small","Material Blade 1Hand Small"),
             ("SKY_HAV_MAT_MATERIAL_SKIN_SMALL","Material Skin Small","Material Skin Small"),
+            ("SKY_HAV_MAT_METAL_GRATE","Metal Grate","Metal Grate"),
             ("SKY_HAV_MAT_MATERIAL_POTS_PANS","Material Pots Pans","Material Pots Pans"),
-            ("SKY_HAV_MAT_MATERIAL_STAIRS_WOOD","Material Stairs Wood","Material Stairs Wood"),
+#            ("SKY_HAV_MAT_MATERIAL_STAIRS_WOOD","Material Stairs Wood","Material Stairs Wood"),
             ("SKY_HAV_MAT_MATERIAL_SKIN_SKELETON","Material Skin Skeleton","Material Skin Skeleton"),
             ("SKY_HAV_MAT_MATERIAL_BLUNT_1HAND","Material Blunt 1Hand","Material Blunt 1Hand"),
             ("SKY_HAV_MAT_STAIRS_BROKEN_STONE","Stairs Broken Stone","Stairs Broken Stone"),
@@ -112,12 +115,13 @@ class CreateCollision(bpy.types.Operator):
             ("SKY_HAV_MAT_MATERIAL_SKIN_METAL_SMALL","Material Skin Metal Small","Material Skin Metal Small"),
             ("SKY_HAV_MAT_WARD","Ward","Ward"),
             ("SKY_HAV_MAT_WEB","Web","Web"),
-            ("SKY_HAV_MAT_MATERIAL_BLADE_1HAND_","Material Blade 1Hand ","Material Blade 1Hand "),
+#            ("SKY_HAV_MAT_MATERIAL_BLADE_1HAND_","Material Blade 1Hand ","Material Blade 1Hand "),
             ("SKY_HAV_MAT_MATERIAL_BLUNT_2HAND","Material Blunt 2Hand","Material Blunt 2Hand"),
             ("SKY_HAV_MAT_STAIRS_METAL","Stairs Metal","Stairs Metal"),
-            ("SKY_HAV_MAT_DLC1_SWINGING_BRIDGE","Swinging Bridge","Swinging Bridge"),
+#            ("SKY_HAV_MAT_DLC1_SWINGING_BRIDGE","Swinging Bridge","Swinging Bridge"),
             ("SKY_HAV_MAT_MATERIAL_BOULDER_MEDIUM","Material Boulder Medium","Material Boulder Medium")
         ]
+        items.sort(key=lambda item: item[2])
         return items
 
     coll_ratio: bpy.props.FloatProperty(name="Decimation Ratio", default=0.1, min=0.01, max=1)
@@ -144,10 +148,22 @@ class CreateCollision(bpy.types.Operator):
         
         # get active object name
         base_name = bpy.context.active_object.name
+
+        # make sure it is unique
+        loop = True
+        while loop == True:
+            for i in bpy.context.scene.objects:
+                if i.name == base_name:
+                    if (base_name[-4] == '.') and base_name[-3:].isnumeric:
+                        base_name = base_name[:-3] + str(int(base_name[-3:]) + 1).zfill(3)
+                    else:
+                        base_name = base_name + '.001'
+                    break;
+                loop = False
         
-        # check length. blender's limit is 63 chars and we will be adding 13 so our max is 50
-        if (len(base_name) > 50):
-            raise TypeError("ERROR: Active object name is too long (>50 chars)")
+        # check length. blender's limit is 63 chars and we will be adding 13 (or 17 if the name is already taken) so our max is 46
+        if (len(base_name) > 46):
+            raise TypeError("ERROR: Active object name is too long (>46 chars)")
             return {'FINISHED'}
         
         # recursively traverse layer_collection for a particular name
@@ -241,13 +257,11 @@ class CreateCollision(bpy.types.Operator):
         if need_mopp == True:
             bpy.ops.object.add(type='EMPTY')
             bpy.context.active_object.name = base_name + "_rb_mopp"
-            bpy.context.active_object.name = base_name + "_rb_mopp"
             if collection != bpy.context.active_object.users_collection[0].name: # is the original object not in the active collection?
                 bpy.data.collections[collection].objects.link(bpy.context.active_object) # add to our original object's collection
                 bpy.ops.collection.objects_remove_active() # remove from active collection
         if need_rb == True:
             bpy.ops.object.add(type='EMPTY')
-            bpy.context.active_object.name = base_name + "_rb"
             bpy.context.active_object.name = base_name + "_rb"
             if collection != bpy.context.active_object.users_collection[0].name:
                 bpy.data.collections[collection].objects.link(bpy.context.active_object) # add to our original object's collection
