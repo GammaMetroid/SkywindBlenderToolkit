@@ -1,6 +1,9 @@
 Skywind Toolkit for Blender
 by Gamma_Metroid
 CHANGELOG
+1.8.7
+-fixed more name collision issues
+
 1.8.6
 -removed unusable collision materials
 -added metal grate collision material
