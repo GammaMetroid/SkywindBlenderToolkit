@@ -3,7 +3,7 @@ bl_info= {
     "description": "Scripts to assist with Skywind 3D and Implementation",
     "author": "Gamma_Metroid",
     "blender": (3,4,0),
-    "version": (1,8,6),
+    "version": (1,8,7),
     "support": "COMMUNITY",
     "category": "Object",
 }
@@ -124,12 +124,20 @@ class CreateCollision(bpy.types.Operator):
         items.sort(key=lambda item: item[2])
         return items
 
+    def name_choices():
+        items = [
+            ("COLLECTION","Collection","Collection"),
+            ("OBJECT","Object","Object")
+        ]
+        return items
+
     coll_ratio: bpy.props.FloatProperty(name="Decimation Ratio", default=0.1, min=0.01, max=1)
     coll_weld: bpy.props.BoolProperty(name="Weld Vertices", default=True)
     coll_weld_distance: bpy.props.FloatProperty(name="Weld Distance", default=0.01, min=1e-06, max=50)
     coll_expand_distance: bpy.props.FloatProperty(name="Expand Distance", default=3, min=-1000, max=1000)
     coll_single_material: bpy.props.BoolProperty(name="Single Material", default=True)
     coll_material: bpy.props.EnumProperty(items=nif_materials(), name="Material", default="SKY_HAV_MAT_WOOD")
+    name_choice: bpy.props.EnumProperty(items=name_choices(), name="Collision Name Source", default="COLLECTION")
         
     def execute(self, context):
         # start timer
@@ -146,20 +154,23 @@ class CreateCollision(bpy.types.Operator):
         if bpy.context.view_layer.objects.active == None:
             bpy.context.view_layer.objects.active = bpy.context.selected_objects[0]
         
-        # get active object name
-        base_name = bpy.context.active_object.name
+        # choose desired name
+        if self.name_choice == "COLLECTION":
+            base_name = bpy.context.active_object.users_collection[0].name
+        elif self.name_choice == "OBJECT":
+            base_name = bpy.context.active_object.name
 
         # make sure it is unique
         loop = True
         while loop == True:
+            loop = False
             for i in bpy.context.scene.objects:
                 if i.name == base_name:
                     if (base_name[-4] == '.') and base_name[-3:].isnumeric:
                         base_name = base_name[:-3] + str(int(base_name[-3:]) + 1).zfill(3)
                     else:
                         base_name = base_name + '.001'
-                    break;
-                loop = False
+                    loop = True # we found an object with that name already so we're going to loop again after we finish going through the scene
         
         # check length. blender's limit is 63 chars and we will be adding 13 (or 17 if the name is already taken) so our max is 46
         if (len(base_name) > 46):
