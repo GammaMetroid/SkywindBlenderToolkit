@@ -2,8 +2,8 @@ bl_info= {
     "name": "Skywind Toolkit",
     "description": "Scripts to assist with Skywind 3D and Implementation",
     "author": "Gamma_Metroid",
-    "blender": (3,4,0),
-    "version": (1,8,7),
+    "blender": (4,1,0),
+    "version": (2,0,0),
     "support": "COMMUNITY",
     "category": "Object",
 }
@@ -151,7 +151,7 @@ class CreateCollision(bpy.types.Operator):
             return {'FINISHED'}
         
         # if none of the selected objects are active, make the first one active
-        if bpy.context.view_layer.objects.active == None:
+        if bpy.context.view_layer.objects.active not in bpy.context.selected_objects:
             bpy.context.view_layer.objects.active = bpy.context.selected_objects[0]
         
         # choose desired name
@@ -234,7 +234,7 @@ class CreateCollision(bpy.types.Operator):
             bpy.ops.mesh.remove_doubles(threshold=self.coll_weld_distance, use_sharp_edge_from_normals=False)
 
         # turn off auto smooth
-        bpy.context.active_object.data.use_auto_smooth = False
+        bpy.ops.mesh.shade_smooth
         # mark all edges as not sharp
         bpy.ops.mesh.mark_sharp(clear=True)
 
@@ -679,7 +679,7 @@ class MergeAndWeight(bpy.types.Operator):
         print("Merge and weight script finished in %.4f sec" % (time.time() - time_start))
         return {'FINISHED'}
         
-class MirrorCustomNormals(bpy.types.Operator):
+'''class MirrorCustomNormals(bpy.types.Operator):
     """Mirror an object, keeping custom normals intact"""
     
     # copy vertex color values from one channel to another
@@ -744,7 +744,7 @@ class MirrorCustomNormals(bpy.types.Operator):
             data.normals_split_custom_set(mirror_split_normals)
         
         print("Mirror custom normals script finished in %.4f sec" % (time.time() - time_start))
-        return {'FINISHED'}
+        return {'FINISHED'}'''
 
 def menu_func(self, context):
     self.layout.operator(CreateLOD.bl_idname)
@@ -754,7 +754,7 @@ def menu_func(self, context):
     self.layout.operator(VColorCopy.bl_idname)
     self.layout.operator(BendNormals.bl_idname)
     self.layout.operator(MergeAndWeight.bl_idname)
-    self.layout.operator(MirrorCustomNormals.bl_idname)
+   # self.layout.operator(MirrorCustomNormals.bl_idname)
 
 # store keymaps here to access after registration
 addon_keymaps = []
@@ -767,7 +767,7 @@ def register():
     bpy.utils.register_class(VColorCopy)
     bpy.utils.register_class(BendNormals)
     bpy.utils.register_class(MergeAndWeight)
-    bpy.utils.register_class(MirrorCustomNormals)
+   # bpy.utils.register_class(MirrorCustomNormals)
     bpy.types.VIEW3D_MT_object.append(menu_func)
 
     # handle the keymap
@@ -802,9 +802,9 @@ def register():
         kmi = km.keymap_items.new(MergeAndWeight.bl_idname, 'M', 'PRESS', ctrl=True, alt=True)
         addon_keymaps.append((km, kmi))
         
-        km = wm.keyconfigs.addon.keymaps.new(name='Object Mode', space_type='EMPTY')
-        kmi = km.keymap_items.new(MirrorCustomNormals.bl_idname, 'K', 'PRESS', ctrl=True, alt=True)
-        addon_keymaps.append((km, kmi))
+       # km = wm.keyconfigs.addon.keymaps.new(name='Object Mode', space_type='EMPTY')
+       # kmi = km.keymap_items.new(MirrorCustomNormals.bl_idname, 'K', 'PRESS', ctrl=True, alt=True)
+       # addon_keymaps.append((km, kmi))
 
 def unregister():
     # handle the keymap
@@ -819,7 +819,7 @@ def unregister():
     bpy.utils.unregister_class(VColorCopy)
     bpy.utils.unregister_class(BendNormals)
     bpy.utils.unregister_class(MergeAndWeight)
-    bpy.utils.unregister_class(MirrorCustomNormals)
+   # bpy.utils.unregister_class(MirrorCustomNormals)
     bpy.types.VIEW3D_MT_object.remove(menu_func)
 
 if __name__ == "__main__":

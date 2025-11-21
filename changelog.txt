@@ -1,6 +1,10 @@
 Skywind Toolkit for Blender
 by Gamma_Metroid
 CHANGELOG
+2.0.0
+-updated Create Collision Mesh for 4.1.0+. this breaks compatibility with earlier versions
+-removed Mirror Custom Normals, as it is no longer needed in 4.1.0+
+
 1.8.7
 -fixed more name collision issues
 
