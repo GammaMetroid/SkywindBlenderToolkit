@@ -3,7 +3,7 @@ bl_info= {
     "description": "Scripts to assist with Skywind 3D and Implementation",
     "author": "Gamma_Metroid",
     "blender": (4,1,0),
-    "version": (2,0,0),
+    "version": (2,0,1),
     "support": "COMMUNITY",
     "category": "Object",
 }
@@ -366,16 +366,19 @@ class CreateLOD(bpy.types.Operator):
         
         objs = bpy.context.selected_objects
         
-        def rename():
-            # assign original names
-            for i in range(0,len(objs)):
-                # pull from the material name
-                objs[i].name = objs[i].material_slots[0].name
-                objs[i].data.name = objs[i].material_slots[0].name
-        
-        # must be done twice to prevent ".001" from being appended
-        rename()
-        rename()
+        # assign original names
+        for obj in objs:
+            # pull from the material name
+            newName = obj.material_slots[0].name
+            # check if the name is already in use
+            for j in bpy.context.scene.objects:
+                if hasattr(j.data,"name"):
+                    if j.name == newName:
+                        j.name = j.name + ".001"
+                    if j.data.name == newName:
+                        j.data.name = j.data.name + ".001"
+            obj.name = newName
+            obj.data.name = newName
 
         print("LOD script finished in %.4f sec" % (time.time() - time_start))
         return {'FINISHED'}
@@ -473,11 +476,18 @@ class SplitAssigningNames(bpy.types.Operator):
         
         objArray = bpy.context.selected_objects
         
+        # assign names
         for i in objArray:
-            i.data.name = i.material_slots[0].material.name
-            i.data.name = i.material_slots[0].material.name
-            i.name = i.material_slots[0].material.name
-            i.name = i.material_slots[0].material.name
+            newName = i.material_slots[0].material.name
+            # check if the name is already in use
+            for j in bpy.context.scene.objects:
+                if hasattr(j.data,"name"):
+                    if j.name == newName:
+                        j.name = j.name + ".001"
+                    if j.data.name == newName:
+                        j.data.name = j.data.name + ".001"
+            i.data.name = newName
+            i.name = newName
             
         print("SplitAssigningNames script finished in %.4f sec" % (time.time() - time_start))
         return {'FINISHED'}
