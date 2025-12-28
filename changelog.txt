@@ -1,6 +1,9 @@
 Skywind Toolkit for Blender
 by Gamma_Metroid
 CHANGELOG
+2.1.0
+-added Lower Case Image Paths function
+
 2.0.1
 -fixed even more name collision issues
 
