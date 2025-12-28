@@ -71,3 +71,10 @@ Hotkey: `Ctrl+Alt+M`
 
 Usage Instructions:
 In object mode, select an object, and press the hotkey. It will have overlapping vertices welded and a weighted normals modifier applied. There are a few options to change properties of the modifier.
+
+## Lower Case Image Paths
+
+Hotkey `Shift+Alt+L`
+
+Usage Instructions:
+In object mode, simple press the hotkey. This function is useful on case sensitive file systems like Linux. Nifs often contain texture paths with upper case characters, but extracting the textures from a bsa creates files with lower case names. Importing a nif with ck-cmd preserves the upper case characters, so you can use this function to replace those paths with all-lower case paths. It will only change the image if it is able to find a file by searching case-insensitively.
