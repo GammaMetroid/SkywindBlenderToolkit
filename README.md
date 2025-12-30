@@ -8,6 +8,7 @@ This addon is a collection of scripts to assist with modeling for Skywind. Curre
 - Copy Vertex Color Channel
 - Bend Normals
 - Merge Vertices and Weight Normals
+- Lower Case Image Paths
 
 ## Create Collision Mesh
 
