@@ -3,6 +3,7 @@ by Gamma_Metroid
 CHANGELOG
 2.1.1
 -update collision handling for new ck-cmd functionality: use material name directly, rather than nifskope enum identifier, taking advantage of new ck-cmd functionality
+-collision object naming improvements
 
 2.1.0
 -added Lower Case Image Paths function
