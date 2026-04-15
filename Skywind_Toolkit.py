@@ -152,8 +152,8 @@ class CreateCollision(bpy.types.Operator):
         while loop == True:
             loop = False
             for i in bpy.context.scene.objects:
-                if i.name == base_name:
-                    if (base_name[-4] == '.') and base_name[-3:].isnumeric:
+                if i.name == base_name + '_rb':
+                    if (len(base_name) > 3) and (base_name[-4] == '.') and base_name[-3:].isnumeric:
                         base_name = base_name[:-3] + str(int(base_name[-3:]) + 1).zfill(3)
                     else:
                         base_name = base_name + '.001'
