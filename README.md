@@ -17,7 +17,7 @@ Hotkey: `Ctrl+Alt+C`
 Usage instructions:
 In object mode, select all the objects you want to be part of your collision mesh. Then press `ctrl+alt+C`. This will merge and decimate the objects, and place them in a hierarchy ready for export via ck-cmd. Choose a collision material from the dropdown menu, or edit the name manually. You can use either the NifSkope names ("SKY_HAV_MAT_WOOD" etc.) or the name of the Material Type as defined in your game plugin. If your collision mesh needs to have multiple materials, simply create and assign faces to them as needed.
 
-| ![ckcmdexample.png](doc/images/ckcmdexample.png) | 
+| ![ckcmdexample.png](doc/images/collisionexample.png) | 
 |:--:| 
 | *Example hierarchy for ck-cmd export* |
 
