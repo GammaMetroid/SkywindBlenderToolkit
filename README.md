@@ -50,7 +50,7 @@ Select all the objects you want to have sync names for, then press the hotkey, a
 Hotkey: `Ctrl+Alt+X`
 
 Usage Instructions:
-This is useful for keeping mesh names the same when importing and exporting with ck-cmd (important for not breaking texture sets). Select the object you want to split by material. Press the hotkey, and the object will be split, assigning the name of the material minus the '_material' suffix to the mesh data of each split object.
+This is useful for keeping mesh names the same when importing and exporting with ck-cmd (important for not breaking texture sets). Select the object you want to split by material. Press the hotkey, and the object will be split, assigning the name of the material minus the '\_material' suffix to the mesh data of each split object.
 
 ## Copy Vertex Color Channel
 
@@ -78,4 +78,11 @@ In object mode, select an object, and press the hotkey. It will have overlapping
 Hotkey `Ctrl+Shift+L`
 
 Usage Instructions:
-In object mode, simple press the hotkey. This function is useful on case sensitive file systems like Linux. Nifs often contain texture paths with upper case characters, but extracting the textures from a bsa creates files with lower case names. Importing a nif with ck-cmd preserves the upper case characters, so you can use this function to replace those paths with all-lower case paths. It will only change the image if it is able to find a file by searching case-insensitively.
+In object mode, press the hotkey. This function is useful on case sensitive file systems like Linux. Nifs often contain texture paths with upper case characters, but extracting the textures from a bsa creates files with lower case names. Importing a nif with ck-cmd preserves the upper case characters, so you can use this function to replace those paths with all-lower case paths. It will only change the image if it is able to find a file by searching case-insensitively.
+
+## Image Path Replace
+
+Hotkey `Ctrl+Alt+R`
+
+Usage Instructions:
+In object mode, press the hotkey. Enter the two strings, what to replace, and what to replace it with. All images in the .blend file will be iterated over. If the new path points to a file that does not exist, the path will not be changed.

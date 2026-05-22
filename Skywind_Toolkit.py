@@ -3,7 +3,7 @@ bl_info= {
     "description": "Scripts to assist with Skywind 3D and Implementation",
     "author": "Gamma_Metroid",
     "blender": (4,1,0),
-    "version": (2,1,1),
+    "version": (2,2,0),
     "support": "COMMUNITY",
     "category": "Object",
 }
@@ -11,6 +11,7 @@ bl_info= {
 import bpy
 import time
 import re # regex
+import os
 from mathutils import Vector
 
 class CreateCollision(bpy.types.Operator):
@@ -688,7 +689,7 @@ class LowerCaseImagePaths(bpy.types.Operator):
         print("Beginning lower case image paths...")
         
         for img in bpy.data.images:
-            # check if there is an image at the file path case INsensetively
+            # check if there is an image at the file path case INsensitively
             filepath = bpy.path.resolve_ncase(img.filepath)
             # if the new path is different
             if img.filepath != filepath:
@@ -697,6 +698,40 @@ class LowerCaseImagePaths(bpy.types.Operator):
                 bpy.data.images.remove(img)
         
         print("Lower case image paths script finished in %.4f sec" % (time.time() - time_start))
+        return {'FINISHED'}
+
+class ImagePathReplace(bpy.types.Operator):
+    """Replace a string within all image paths"""
+    
+    bl_idname = "object.imagepathreplace"
+    bl_label = "Replace a string within all image paths"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    oldStr: bpy.props.StringProperty(name='Replace', description='Substring to be replaced', default='')
+    newStr: bpy.props.StringProperty(name='With', description='String to replace with', default='')
+
+    def execute(self, context):
+        time_start = time.time()
+        print("Beginning image path replace...")
+        print(f'Replacing {self.oldStr} with {self.newStr}')
+
+        for img in bpy.data.images:
+            print(f'Image path to be modified: {img.filepath}')
+            new_filepath = img.filepath.replace(self.oldStr,self.newStr)
+            print(f'New file path:             {new_filepath}')
+
+            # skip if the image does not exist
+            if os.path.isfile(bpy.path.abspath(new_filepath)) == False:
+                print(f"Image {new_filepath} does not exist. Skipping")
+                continue
+
+            new_img = bpy.data.images.load(new_filepath)
+            img.user_remap(new_img)
+            bpy.data.images.remove(img)
+
+            print('Path replacement successful')
+        
+        print("Image path replace script finished in %.4f sec" % (time.time() - time_start))
         return {'FINISHED'}
 
 def menu_func(self, context):
@@ -708,6 +743,7 @@ def menu_func(self, context):
     self.layout.operator(BendNormals.bl_idname)
     self.layout.operator(MergeAndWeight.bl_idname)
     self.layout.operator(LowerCaseImagePaths.bl_idname)
+    self.layout.operator(ImagePathReplace.bl_idname)
 
 # store keymaps here to access after registration
 addon_keymaps = []
@@ -721,6 +757,7 @@ def register():
     bpy.utils.register_class(BendNormals)
     bpy.utils.register_class(MergeAndWeight)
     bpy.utils.register_class(LowerCaseImagePaths)
+    bpy.utils.register_class(ImagePathReplace)
     bpy.types.VIEW3D_MT_object.append(menu_func)
 
     # handle the keymap
@@ -758,6 +795,10 @@ def register():
         km = wm.keyconfigs.addon.keymaps.new(name='Object Mode', space_type='EMPTY')
         kmi = km.keymap_items.new(LowerCaseImagePaths.bl_idname, 'L', 'PRESS', ctrl=True, shift=True)
         addon_keymaps.append((km, kmi))
+        
+        km = wm.keyconfigs.addon.keymaps.new(name='Object Mode', space_type='EMPTY')
+        kmi = km.keymap_items.new(ImagePathReplace.bl_idname, 'R', 'PRESS', ctrl=True, alt=True)
+        addon_keymaps.append((km, kmi))
 
 def unregister():
     # handle the keymap
@@ -773,6 +814,7 @@ def unregister():
     bpy.utils.unregister_class(BendNormals)
     bpy.utils.unregister_class(MergeAndWeight)
     bpy.utils.unregister_class(LowerCaseImagePaths)
+    bpy.utils.unregister_class(ImagePathReplace)
     bpy.types.VIEW3D_MT_object.remove(menu_func)
 
 if __name__ == "__main__":
