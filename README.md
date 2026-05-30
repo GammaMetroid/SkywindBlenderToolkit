@@ -9,6 +9,7 @@ This addon is a collection of scripts to assist with modeling for Skywind. Curre
 - Bend Normals
 - Merge Vertices and Weight Normals
 - Lower Case Image Paths
+- Image Path Replace
 
 ## Create Collision Mesh
 
@@ -85,4 +86,4 @@ In object mode, press the hotkey. This function is useful on case sensitive file
 Hotkey `Ctrl+Alt+R`
 
 Usage Instructions:
-In object mode, press the hotkey. Enter the two strings, what to replace, and what to replace it with. All images in the .blend file will be iterated over. If the new path points to a file that does not exist, the path will not be changed.
+In object mode, press the hotkey. Enter the two strings, what to replace, and what to replace it with. All images in the .blend file will be iterated over. If the new path points to a file that does not exist, the path will not be changed. This is useful for fixing file paths that break when moving the .blend file.
